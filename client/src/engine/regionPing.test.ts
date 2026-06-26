@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { regionStats } from './regionPing'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { regionStats, httpsTimeOnce } from './regionPing'
 import { measureRegion, measureAllRegions, type TimeOnce } from './regionPing'
 import { REGIONS } from '@shared/regions'
 
@@ -54,6 +54,27 @@ describe('measureRegion', () => {
     expect(s.received).toBe(0)
     expect(s.median).toBeNull()
     expect(s.lossPct).toBe(100)
+  })
+})
+
+describe('httpsTimeOnce', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  it('calls fetch with redirect:manual, mode:no-cors, and cache:no-store', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({} as Response)
+    vi.stubGlobal('fetch', mockFetch)
+
+    await httpsTimeOnce('https://x/', 2000)
+
+    expect(mockFetch).toHaveBeenCalledOnce()
+    const [, options] = mockFetch.mock.calls[0] as [string, RequestInit]
+    expect(options).toMatchObject({
+      redirect: 'manual',
+      mode: 'no-cors',
+      cache: 'no-store',
+    })
   })
 })
 

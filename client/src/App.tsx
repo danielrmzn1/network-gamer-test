@@ -130,6 +130,7 @@ export default function App() {
                 rank={v.rank}
                 state={v.state}
                 reason={v.reason}
+                mode={s.mode === 'unknown' ? undefined : s.mode}
                 selected={v.gameId === s.selectedGameId}
                 onSelect={() => onPickGame(v.gameId)}
               />

@@ -120,7 +120,12 @@ const REASON: Record<string, Entry> = {
   bufferbloat: { en: 'bufferbloat', es: 'el bufferbloat' },
   throughput: { en: 'throughput', es: 'el ancho de banda' },
 }
-export function reasonWord(l: Lang, r: string): string {
+const REASON_HOSTED_LOSS: Entry = {
+  en: 'your connection (last-mile loss)',
+  es: 'tu conexión (pérdida de última milla)',
+}
+export function reasonWord(l: Lang, r: string, mode?: 'local' | 'hosted'): string {
+  if (mode === 'hosted' && r === 'packet loss') return REASON_HOSTED_LOSS[l]
   return REASON[r]?.[l] ?? r
 }
 
@@ -172,11 +177,11 @@ export function heroVerdict(l: Lang, state: VerdictState): { pre: string; post: 
   if (state === 'RISKY') return { pre: 'Playable, but rough for ', post: '.' }
   return { pre: 'Not ready for ', post: ' right now.' }
 }
-export function weakPointText(l: Lang, reason: string | null): string {
+export function weakPointText(l: Lang, reason: string | null, mode?: 'local' | 'hosted'): string {
   if (reason) {
     return l === 'es'
-      ? `Tu punto débil es ${reasonWord('es', reason)}. `
-      : `Your weak point is ${reasonWord('en', reason)}. `
+      ? `Tu punto débil es ${reasonWord('es', reason, mode)}. `
+      : `Your weak point is ${reasonWord('en', reason, mode)}. `
   }
   return l === 'es'
     ? 'Todas las métricas clave están en rango para este juego. '

@@ -51,10 +51,11 @@ function VerdictText({ lang, state, game }: { lang: Lang; state: EngineState; ga
   const hv = heroVerdict(lang, v?.state ?? 'NO')
   const where = lang === 'es' ? `a ${regionLabel}` : `to ${regionLabel}`
   const tail = ''
+  const mode = state.mode === 'unknown' ? undefined : state.mode
   const metrics =
     lang === 'es'
-      ? `${weakPointText('es', v?.reason ?? null)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, bufferbloat ${bloat}.${tail}`
-      : `${weakPointText('en', v?.reason ?? null)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, ${bloat} bufferbloat.${tail}`
+      ? `${weakPointText('es', v?.reason ?? null, mode)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, bufferbloat ${bloat}.${tail}`
+      : `${weakPointText('en', v?.reason ?? null, mode)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, ${bloat} bufferbloat.${tail}`
 
   return (
     <>
