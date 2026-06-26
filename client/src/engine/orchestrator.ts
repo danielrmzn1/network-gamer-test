@@ -23,6 +23,7 @@ import { pickBackend, measureDownload, measureUpload, LatencySampler } from './t
 import { median, meanAbsDev } from './stats'
 import { detectMode } from './mode'
 import { measureBrowserLoss } from './loss'
+import { measureAllRegions } from './regionPing'
 import { store } from '../state/store'
 
 interface Measured {
@@ -342,18 +343,29 @@ function assembleHostedReport(m: Measured, selectedGameId: string, idleJitter: n
 }
 
 async function runHosted(opts: { gameId: string; region: Region | null }): Promise<void> {
-  void opts.region
   try {
     const backend = await pickBackend()
     store.set({ backendLabel: backend === 'cloudflare' ? 'Cloudflare' : 'Local loopback' })
 
-    // Phase 1: idle latency to the throughput endpoint (generic internet RTT)
-    store.set({ phase: 'regions', progress: 0.08 }, true)
+    // Phase 1: per-region HTTPS RTT (browser) + idle baseline (for bufferbloat)
+    store.set({ phase: 'regions', phaseLabel: 'Mapping regions & latency', progress: 0.08 }, true)
     const idleSampler = new LatencySampler(backend, (rtt) => store.pushLatency(rtt))
-    await idleSampler.run(3500, 160)
+    const idleP = idleSampler.run(3500, 160)
+    const regionsP = measureAllRegions({ count: 7, timeoutMs: 2000, onRegion: (s) => store.putRegion(s) })
+    await Promise.all([idleP, regionsP])
     const idleSamples = idleSampler.samples()
     const idleMedian = median(idleSamples)
     const idleJitter = meanAbsDev(idleSamples)
+
+    // Choose the region within this game's allowed set (mirrors runLocal).
+    const allowed = gameRegions(opts.gameId)
+    const allowList = allowed.length ? allowed : undefined
+    const chosenRegion: Region =
+      (opts.region && (!allowList || allowList.includes(opts.region)) ? opts.region : null) ??
+      bestRegion(store.value.regions, allowList) ??
+      allowed[0] ??
+      'NA-East'
+    store.set({ selectedRegion: chosenRegion })
 
     // Phase 2: packet loss via browser WebRTC (Cloudflare TURN loopback)
     store.set({ phase: 'loss', progress: 0.3 }, true)
@@ -383,7 +395,7 @@ async function runHosted(opts: { gameId: string; region: Region | null }): Promi
     // Phase 5: compute + grade
     store.set({ phase: 'compute', progress: 0.95 }, true)
     const measured: Measured = {
-      regions: {},
+      regions: store.value.regions,
       lossIdle,
       lossLoaded: null,
       download,
@@ -393,13 +405,19 @@ async function runHosted(opts: { gameId: string; region: Region | null }): Promi
       loadedMedianUp,
       lossMethod: 'webrtc',
     }
-    const report = assembleHostedReport(measured, opts.gameId, idleJitter)
+    // If at least one region was reachable, grade per-region; otherwise fall back
+    // to the generic internet-RTT report (region map shows "—" everywhere).
+    const hasRegionData = Object.values(store.value.regions).some((r) => r.median != null)
+    const report = hasRegionData
+      ? assembleReport(measured, opts.gameId, chosenRegion)
+      : assembleHostedReport(measured, opts.gameId, idleJitter)
     store.set({
       report,
       bufferbloat: report.bufferbloat,
       idleMedian,
       loadedDownMedian: loadedMedianDown,
       loadedUpMedian: loadedMedianUp,
+      selectedRegion: report.region,
       status: 'done',
       phase: null,
       progress: 1,
