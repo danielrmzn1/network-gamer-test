@@ -29,7 +29,7 @@ export function handleDownload(req: IncomingMessage, res: ServerResponse): void 
     'cache-control': 'no-store, no-cache, must-revalidate',
     // Make sure no intermediary tries to compress incompressible data.
     'content-encoding': 'identity',
-    'x-netpulse': 'download',
+    'x-fragrate': 'download',
   })
 
   let sent = 0

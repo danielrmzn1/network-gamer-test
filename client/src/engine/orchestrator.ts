@@ -283,7 +283,7 @@ async function runLocal(opts: { gameId: string; region: Region | null }): Promis
  * raw TCP/UDP), so we grade against the generic internet RTT to the throughput
  * endpoint plus browser-measured loss/bufferbloat/throughput. The per-game
  * verdicts still apply each genre's thresholds — clearly an approximation of the
- * real per-region ping you'd get by running NETPULSE locally.
+ * real per-region ping you'd get by running FRAGRATE locally.
  */
 function assembleHostedReport(m: Measured, selectedGameId: string, idleJitter: number): NetReport {
   const bufferbloat = buildBufferbloat(m)

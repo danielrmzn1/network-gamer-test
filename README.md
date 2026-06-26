@@ -1,11 +1,11 @@
-# ⚡ NETPULSE — Gamer Network Report
+# ⚡ FRAGRATE — Gamer Network Report
 
 A **gamer-grade** network quality report. Not another "download / upload" speed test —
-NETPULSE measures the metrics that actually decide whether you can play: **ping to real
+FRAGRATE measures the metrics that actually decide whether you can play: **ping to real
 game regions, jitter, packet loss, and bufferbloat (latency under load)** — then gives you
 a straight, per-game verdict: **PLAYABLE / RISKY / NO-GO**.
 
-![NETPULSE dashboard](docs/screenshot.png)
+![FRAGRATE dashboard](docs/screenshot.png)
 
 ## Why it's different
 
@@ -14,7 +14,7 @@ different question: **"will my shots register and will I rubber-band?"** That's 
 latency, its stability (jitter), packet loss, and what happens to latency when the link is
 busy (bufferbloat) — none of which a throughput number captures.
 
-NETPULSE scores your connection against **per-genre thresholds** (a tactical shooter is far
+FRAGRATE scores your connection against **per-genre thresholds** (a tactical shooter is far
 less forgiving than an MMO) and tells you, game by game, whether you're good to go.
 
 ## Honest by design
@@ -70,7 +70,7 @@ Other scripts: `pnpm typecheck` (both workspaces).
 
 ## Deploy to Cloudflare Pages (hosted mode)
 
-NETPULSE runs in two modes, detected automatically at load:
+FRAGRATE runs in two modes, detected automatically at load:
 
 - **Local mode** (you run it on your machine): full report — real per-game-region TCP ping + STUN/UDP packet loss measured from *your* connection.
 - **Hosted mode** (static on Cloudflare Pages): browser-only — download, upload, bufferbloat, and **packet loss via WebRTC through Cloudflare's TURN relay**. Per-game-region ping becomes a *"run locally"* feature (a browser can't do raw TCP/UDP to game servers). The hosted site shows a **Hosted demo** badge and a run-locally panel where the region map would be.

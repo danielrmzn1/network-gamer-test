@@ -5,7 +5,7 @@
   // No nodejs_compat needed — the Function uses only fetch/Response.
   // TURN secrets are NOT here; set them via `wrangler pages secret put` or the
   // dashboard (Settings -> Variables and Secrets).
-  "name": "netpulse",
+  "name": "fragrate",
   "pages_build_output_dir": "./client/dist",
   "compatibility_date": "2026-06-25"
 }

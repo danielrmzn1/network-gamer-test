@@ -1,6 +1,6 @@
-# NETPULSE — Consolidated Build Spec (v1)
+# FRAGRATE — Consolidated Build Spec (v1)
 
-> **What this is.** The single implementation-ready specification for NETPULSE, a gamer-grade
+> **What this is.** The single implementation-ready specification for FRAGRATE, a gamer-grade
 > network-quality report. It merges the endpoint research, the genre threshold/grading model,
 > the measurement-engine design, and the visual design system into one document an engineer
 > can build directly against.
@@ -610,7 +610,7 @@ Anything TCP-based (including the WS fallback) cannot observe real loss — it s
 
 ## 4. Visual design system (condensed)
 
-Full spec: `NETPULSE-design-system.md`. Direction: **neon cyberpunk HUD**, read like an instrument cluster — rank badge first, gauges second, per-game cards third. **Cyan/magenta = brand atmosphere; green/amber/red = semantic state. Never mix them.** Fully self-contained: no CDN, no remote fonts/images (CSP-safe Artifact-style constraints apply to the shipped page too).
+Full spec: `FRAGRATE-design-system.md`. Direction: **neon cyberpunk HUD**, read like an instrument cluster — rank badge first, gauges second, per-game cards third. **Cyan/magenta = brand atmosphere; green/amber/red = semantic state. Never mix them.** Fully self-contained: no CDN, no remote fonts/images (CSP-safe Artifact-style constraints apply to the shipped page too).
 
 ### 4.1 `:root` tokens (drop-in)
 
@@ -640,7 +640,7 @@ Full spec: `NETPULSE-design-system.md`. Direction: **neon cyberpunk HUD**, read 
   --r-sm:4px; --r-md:8px; --r-lg:14px; --r-pill:999px;
   --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px; --sp-8:64px;
   /* Type stacks */
-  --font-display:"NetpulseDisplay","Bahnschrift","DIN Alternate","Eurostile",system-ui,sans-serif;
+  --font-display:"FragrateDisplay","Bahnschrift","DIN Alternate","Eurostile",system-ui,sans-serif;
   --font-mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace;
   --font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
 }
@@ -687,7 +687,7 @@ network-gamer-test/
 ├─ docs/
 │  ├─ BUILD_SPEC.md             # ← this file
 │  └─ MEASUREMENT_ENGINE.md     # full engine algorithms (exists)
-├─ NETPULSE-design-system.md    # full visual spec (exists)
+├─ FRAGRATE-design-system.md    # full visual spec (exists)
 │
 ├─ shared/                      # ← NEW: types + data shared by client & server (path-aliased, not a workspace)
 │  ├─ catalog.types.ts          # Region, EndpointKind, Endpoint, Genre, Game (§1.1)

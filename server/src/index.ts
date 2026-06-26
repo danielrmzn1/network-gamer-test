@@ -12,7 +12,7 @@ const server = createServer((req, res) => {
 
   if (path === '/api/health') {
     res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' })
-    res.end(JSON.stringify({ ok: true, service: 'netpulse', ts: Date.now() }))
+    res.end(JSON.stringify({ ok: true, service: 'fragrate', ts: Date.now() }))
     return
   }
   if (path === '/dl' && req.method === 'GET') return handleDownload(req, res)
@@ -40,6 +40,6 @@ server.on('upgrade', (req, socket, head) => {
 })
 
 server.listen(PORT, () => {
-  console.log(`[netpulse] measurement server on http://localhost:${PORT}`)
-  console.log(`[netpulse] client build present: ${clientBuildExists()} (dev uses Vite :5173)`)
+  console.log(`[fragrate] measurement server on http://localhost:${PORT}`)
+  console.log(`[fragrate] client build present: ${clientBuildExists()} (dev uses Vite :5173)`)
 })

@@ -16,7 +16,7 @@ export async function detectMode(): Promise<RunMode> {
     clearTimeout(timer)
     if (res.ok) {
       const j = (await res.json()) as { service?: string }
-      if (j?.service === 'netpulse') {
+      if (j?.service === 'fragrate') {
         cached = 'local'
         return cached
       }

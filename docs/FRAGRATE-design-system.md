@@ -1,9 +1,9 @@
-# NETPULSE — Visual Design System
+# FRAGRATE — Visual Design System
 
 > **Direction:** Neon cyberpunk HUD. Dark near-black base, cyan + magenta neon glow, animated gauges, an overall S/A/B/C/D rank badge, and per-game "can you play?" verdict cards.
 > **Constraint:** Fully self-contained. No external assets, no CDNs, no webfont links. Everything below ships inline.
 
-NETPULSE is read like an instrument cluster, not an article. The eye should land on the **rank badge** first (the verdict), then the **gauges** (the evidence), then the **per-game cards** (the consequence). Color is doing two separate jobs and they must never be confused: **cyan/magenta is the brand atmosphere**, and **green/amber/red is semantic state**. A gauge glows cyan because that's the HUD; its needle goes red because the number is bad. Keep those systems apart and the whole thing stays legible.
+FRAGRATE is read like an instrument cluster, not an article. The eye should land on the **rank badge** first (the verdict), then the **gauges** (the evidence), then the **per-game cards** (the consequence). Color is doing two separate jobs and they must never be confused: **cyan/magenta is the brand atmosphere**, and **green/amber/red is semantic state**. A gauge glows cyan because that's the HUD; its needle goes red because the number is bad. Keep those systems apart and the whole thing stays legible.
 
 ---
 
@@ -92,21 +92,21 @@ No webfont fetch (CSP-safe). We evoke three roles using system stacks plus **one
 
 | Role | Feel to evoke | Self-contained stack |
 |---|---|---|
-| **Display / HUD headline** | A wide, squared, mono-ish techno face (think *Orbitron / Rajdhani* energy) — geometric, slightly condensed, all-caps. | Bundle one such face as `NetpulseDisplay` via data-URI `@font-face`. Fallback: `"Bahnschrift", "DIN Alternate", "Eurostile", system-ui, sans-serif`. |
+| **Display / HUD headline** | A wide, squared, mono-ish techno face (think *Orbitron / Rajdhani* energy) — geometric, slightly condensed, all-caps. | Bundle one such face as `FragrateDisplay` via data-URI `@font-face`. Fallback: `"Bahnschrift", "DIN Alternate", "Eurostile", system-ui, sans-serif`. |
 | **Readout / numerals** | A monospace so digits never reflow as they count up. | `ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace`. Always with `font-variant-numeric: tabular-nums`. |
 | **Body / labels** | Clean neutral grotesque (think *Inter*-class but we don't ship it). | `system-ui, -apple-system, "Segoe UI", Roboto, sans-serif`. |
 
 ```css
 /* Bundled display face — replace the base64 payload with the real woff2 */
 @font-face {
-  font-family: "NetpulseDisplay";
+  font-family: "FragrateDisplay";
   src: url("data:font/woff2;base64,<<<INLINE_WOFF2_PAYLOAD>>>") format("woff2");
   font-weight: 400 800;
   font-display: swap;
 }
 
 :root {
-  --font-display: "NetpulseDisplay", "Bahnschrift", "DIN Alternate", "Eurostile", system-ui, sans-serif;
+  --font-display: "FragrateDisplay", "Bahnschrift", "DIN Alternate", "Eurostile", system-ui, sans-serif;
   --font-mono:    ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
   --font-body:    system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }

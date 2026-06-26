@@ -9,7 +9,7 @@ export type Lang = 'en' | 'es'
 // ── reactive language store (persisted) ──────────────────────────────────────
 function initial(): Lang {
   try {
-    const v = localStorage.getItem('netpulse-lang')
+    const v = localStorage.getItem('fragrate-lang')
     if (v === 'es' || v === 'en') return v
   } catch { /* ignore */ }
   return 'en'
@@ -20,7 +20,7 @@ const listeners = new Set<() => void>()
 export function setLang(l: Lang): void {
   if (l === current) return
   current = l
-  try { localStorage.setItem('netpulse-lang', l) } catch { /* ignore */ }
+  try { localStorage.setItem('fragrate-lang', l) } catch { /* ignore */ }
   for (const fn of listeners) fn()
 }
 export function useLang(): Lang {
@@ -72,8 +72,8 @@ const S = {
   hostedBadge: { en: 'Hosted demo', es: 'Demo en línea' },
   runLocallyTitle: { en: 'Per-game server ping', es: 'Ping por servidor de juego' },
   runLocallyBody: {
-    en: 'Real ping and packet loss to each game’s regional servers need raw network access a browser can’t do. Run NETPULSE locally to unlock the full per-game, per-region report.',
-    es: 'El ping y la pérdida reales a los servidores regionales de cada juego requieren acceso de red que el navegador no permite. Ejecuta NETPULSE localmente para el reporte completo por juego y región.',
+    en: 'Real ping and packet loss to each game’s regional servers need raw network access a browser can’t do. Run FRAGRATE locally to unlock the full per-game, per-region report.',
+    es: 'El ping y la pérdida reales a los servidores regionales de cada juego requieren acceso de red que el navegador no permite. Ejecuta FRAGRATE localmente para el reporte completo por juego y región.',
   },
   runLocallyCta: { en: '⬇ How to run locally', es: '⬇ Cómo ejecutarlo localmente' },
   internetRtt: { en: 'internet RTT', es: 'RTT de Internet' },

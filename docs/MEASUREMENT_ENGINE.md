@@ -1,4 +1,4 @@
-# NETPULSE — Measurement Engine Technical Design
+# FRAGRATE — Measurement Engine Technical Design
 
 Status: implementable spec, v1
 Stack (already scaffolded): Node 20 + `node:http` + `ws` + `node-datachannel` (server, port `8787`), React 18 + Vite (client, dev `5173`, proxied to server). In production both are same-origin behind the Node server, so **CORS is a non-issue**. Route prefixes are already reserved in `vite.config.ts`: `/api`, `/dl`, `/ul`, `/net` (WS).

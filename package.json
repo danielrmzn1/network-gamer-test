@@ -1,8 +1,8 @@
 {
-  "name": "netpulse",
+  "name": "fragrate",
   "private": true,
   "version": "1.0.0",
-  "description": "NETPULSE — a gamer-grade network quality report (ping, jitter, packet loss, bufferbloat, per-game verdicts)",
+  "description": "FRAGRATE — a gamer-grade network quality report (ping, jitter, packet loss, bufferbloat, per-game verdicts)",
   "type": "module",
   "packageManager": "pnpm@10.11.0",
   "scripts": {
