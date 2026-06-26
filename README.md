@@ -68,31 +68,43 @@ Other scripts: `pnpm typecheck` (both workspaces).
 > Monorepo via **pnpm** workspaces (`pnpm-workspace.yaml`): the `client` and `server`
 > packages, plus a path-aliased `shared/` (imported as `@shared/*`, not a workspace).
 
-## Deploy to Cloudflare Pages (hosted mode)
+## Deploy to Cloudflare (hosted mode)
 
 FRAGRATE runs in two modes, detected automatically at load:
 
 - **Local mode** (you run it on your machine): full report — real per-game-region TCP ping + STUN/UDP packet loss measured from *your* connection.
-- **Hosted mode** (static on Cloudflare Pages): browser-only — download, upload, bufferbloat, and **packet loss via WebRTC through Cloudflare's TURN relay**. Per-game-region ping becomes a *"run locally"* feature (a browser can't do raw TCP/UDP to game servers). The hosted site shows a **Hosted demo** badge and a run-locally panel where the region map would be.
+- **Hosted mode** (a Cloudflare Worker): browser-only — download, upload, bufferbloat, and **packet loss via WebRTC through Cloudflare's TURN relay**. Per-game-region ping becomes a *"run locally"* feature (a browser can't do raw TCP/UDP to game servers). The hosted site shows a **Hosted demo** badge and a run-locally panel where the region map would be.
 
-Everything deploys to Cloudflare — no Vercel, no VPS:
+Hosted mode is a single **Cloudflare Worker** (Workers Static Assets): it serves the built client from `client/dist` and exposes one dynamic route, `GET /api/turn`, which mints short-lived Cloudflare Realtime TURN credentials so the long-term key never reaches the browser. Config lives in `wrangler.jsonc` (entry `worker/index.ts` + `assets`).
 
-- **Static client** → Cloudflare Pages (build `pnpm build`, output `client/dist`).
-- **TURN credentials** → a Pages Function at `functions/api/turn.ts` (`/api/turn`) that mints short-lived Cloudflare Realtime TURN credentials. The long-term key stays server-side.
+### Deploy from Git (recommended)
 
-### One-time setup
+Connect the repo in **Workers & Pages → Create → Import a repository** and pick this repo. Cloudflare auto-detects pnpm (committed `pnpm-lock.yaml` + the `packageManager` field) and Node 20 (`.nvmrc`), then runs:
+
+- **Build command:** `pnpm run build`
+- **Deploy command:** `npx wrangler deploy` *(the default — no change needed)*
+
+Every push to `main` redeploys. You get `https://fragrate.<your-subdomain>.workers.dev` (add a custom domain under the Worker → **Settings → Domains & Routes**).
+
+To deploy by hand instead: `pnpm build && pnpm dlx wrangler deploy`.
+
+### TURN credentials (optional)
+
+Without these the site still works — packet loss just shows "run locally."
 
 1. **Create a TURN key**: Cloudflare dashboard → **Realtime (Calls) → TURN** (`dash.cloudflare.com/?to=/:account/calls`) → *Create TURN key*. Copy both values immediately — the API token is shown only once.
-2. **Create the Pages project**: Workers & Pages → Create → Pages → connect this repo (or `wrangler pages deploy`). Build command `pnpm build`, output `client/dist`, root directory blank. The repo's `.nvmrc` pins **Node 20** for the build, and Cloudflare auto-detects pnpm from the committed `pnpm-lock.yaml` + the `packageManager` field — no extra config needed.
-3. **Add the two secrets** (Settings → Variables and Secrets → type *Secret*, for Production):
-   - `TURN_KEY_ID`
-   - `TURN_KEY_API_TOKEN`
-   
-   …or via CLI: `pnpm dlx wrangler pages secret put TURN_KEY_ID` / `... TURN_KEY_API_TOKEN`.
-4. **Custom domain**: Pages project → Custom domains → add your apex/subdomain → Activate. Let Cloudflare create the DNS record (don't pre-create a CNAME, or you'll get a 522).
-5. **Verify**: open `https://<project>.pages.dev/api/turn` → expect `200` with an `iceServers` array. A `500` means the secrets aren't set. Then run the report and confirm the packet-loss gauge populates.
+2. **Set the two Worker secrets**:
+   ```bash
+   pnpm dlx wrangler secret put TURN_KEY_ID
+   pnpm dlx wrangler secret put TURN_KEY_API_TOKEN
+   ```
+   …or in the dashboard: the Worker → **Settings → Variables and Secrets** (type *Secret*).
 
-Config lives in `wrangler.jsonc` (`pages_build_output_dir: ./client/dist`). For local Pages dev, put the two keys in a gitignored `.dev.vars` and run `pnpm build && pnpm dlx wrangler pages dev client/dist`. Without TURN configured, the hosted site still works — packet loss just shows as "run locally" rather than breaking.
+### Verify
+
+Open `https://<your-worker-url>/api/turn` → expect `200` with an `iceServers` array. A `500` means the secrets aren't set (the site still works). Then run the report and confirm the packet-loss gauge populates.
+
+For local hosted-mode dev, put the two keys in a gitignored `.dev.vars` and run `pnpm build && pnpm dlx wrangler dev`.
 
 ## Architecture
 

@@ -1,11 +1,23 @@
 {
-  // Cloudflare Pages project config. `pages_build_output_dir` marks this a
-  // Pages project so `wrangler pages deploy` serves client/dist and bundles
-  // the functions/ directory (the /api/turn credential endpoint) automatically.
-  // No nodejs_compat needed — the Function uses only fetch/Response.
-  // TURN secrets are NOT here; set them via `wrangler pages secret put` or the
-  // dashboard (Settings -> Variables and Secrets).
+  // Cloudflare Worker (Workers Static Assets). `main` is the Worker entry; the
+  // built client in `assets.directory` is served as static files, with an SPA
+  // fallback to index.html (`not_found_handling`). The Worker runs only for
+  // paths that don't match a static asset — it handles GET /api/turn and 404s
+  // any other /api/*; everything else is served from client/dist.
+  //
+  // Build + deploy: `pnpm run build` (writes client/dist) then `wrangler deploy`.
+  // No nodejs_compat needed — the Worker uses only fetch/Response/URL.
+  //
+  // TURN secrets are NOT stored here. Set them with:
+  //   pnpm dlx wrangler secret put TURN_KEY_ID
+  //   pnpm dlx wrangler secret put TURN_KEY_API_TOKEN
+  // (or the dashboard: the Worker -> Settings -> Variables and Secrets).
   "name": "fragrate",
-  "pages_build_output_dir": "./client/dist",
-  "compatibility_date": "2026-06-25"
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-06-25",
+  "assets": {
+    "directory": "./client/dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  }
 }

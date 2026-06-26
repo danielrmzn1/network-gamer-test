@@ -5,7 +5,7 @@ let cached: RunMode | null = null
 /**
  * Detect whether the local Node measurement server is present (full mode:
  * real per-game-region TCP ping + STUN loss), or we're running as a static
- * site on Cloudflare Pages (hosted mode: browser-only measurements).
+ * site on Cloudflare Worker (hosted mode: browser-only measurements).
  */
 export async function detectMode(): Promise<RunMode> {
   if (cached) return cached

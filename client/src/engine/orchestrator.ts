@@ -279,7 +279,7 @@ async function runLocal(opts: { gameId: string; region: Region | null }): Promis
 }
 
 /**
- * Hosted (Cloudflare Pages) report: no per-game-region ping (browsers can't do
+ * Hosted (Cloudflare Worker) report: no per-game-region ping (browsers can't do
  * raw TCP/UDP), so we grade against the generic internet RTT to the throughput
  * endpoint plus browser-measured loss/bufferbloat/throughput. The per-game
  * verdicts still apply each genre's thresholds — clearly an approximation of the

@@ -40,7 +40,7 @@ export default function App() {
   const onPickRegion = (r: Region): void => recompute({ region: r })
 
   // Detect once whether the local measurement server is present (full mode) or
-  // we're a static Cloudflare Pages deploy (hosted mode).
+  // we're a static Cloudflare Worker deploy (hosted mode).
   useEffect(() => {
     void detectMode().then((m) => store.set({ mode: m }, true))
   }, [])
@@ -50,7 +50,7 @@ export default function App() {
       <header className="np-header">
         <div className="np-brand">
           <h1>
-            NET<span className="mag">PULSE</span>
+            FRAG<span className="mag">RATE</span>
           </h1>
           <span className="np-tag">{t(lang, 'tagline')}</span>
           {s.mode === 'hosted' && <span className="np-hosted-badge">{t(lang, 'hostedBadge')}</span>}

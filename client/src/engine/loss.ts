@@ -1,10 +1,10 @@
 import type { StunLossData } from '@shared/protocol'
 
-// Browser-side packet loss for HOSTED mode (Cloudflare Pages — no Node server).
+// Browser-side packet loss for HOSTED mode (Cloudflare Worker — no Node server).
 // Two RTCPeerConnections forced onto the Cloudflare TURN relay via
 // iceTransportPolicy:'relay', so probes traverse the user's real last-mile UDP
 // path (browser -> Cloudflare TURN edge -> browser). TURN creds come from the
-// /api/turn Pages Function. Returns StunLossData and NEVER throws: any failure
+// /api/turn Worker route. Returns StunLossData and NEVER throws: any failure
 // (no TURN, ICE timeout) -> available:false, so the UI shows "run locally".
 
 const unavailable = (): StunLossData => ({
