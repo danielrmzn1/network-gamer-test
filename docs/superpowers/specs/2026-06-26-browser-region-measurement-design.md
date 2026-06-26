@@ -71,8 +71,14 @@ Probe per region:
 1. **Warm-up request (discarded):** pays DNS + TCP + TLS once, parking the
    connection in the browser's keep-alive pool.
 2. **N timed samples** on the reused connection:
-   `fetch(url, { mode: 'no-cors', cache: 'no-store', redirect: 'manual', signal })`
-   with a cache-buster query (`?_=<counter>`). Each is ~1 round-trip. Compute
+   `fetch(url, { mode: 'cors', cache: 'no-store', redirect: 'manual', signal })`
+   with a cache-buster query (`?_=<counter>`). **`mode` must be `'cors'` (the
+   default), NOT `'no-cors'`** — the Fetch standard forbids `redirect:'manual'`
+   with `no-cors` (no-cors requires `redirect:'follow'`), so `no-cors` + `manual`
+   throws synchronously in the browser. `cors` + `manual` resolves with an
+   `opaqueredirect` (CORS headers not needed; the body is unreadable either way).
+   A simple GET with no custom headers triggers no CORS preflight.
+   Each is ~1 round-trip. Compute
    **min** (cleanest RTT), **median** (stable), and **jitter = mean of
    `|sample[i] − sample[i-1]|` over consecutive samples** (IPDV — identical
    formula to `server/src/pinger.ts:116-119`, so hosted and local jitter are
@@ -292,9 +298,11 @@ work item: if a CSP is ever added, `connect-src` must include
 - **HTTPS-RTT magnitude:** above raw UDP ping (TLS/app-layer + 301 server
   processing); mitigated by min-of-N and honest labeling; absolute numbers not
   comparable to local.
-- **`redirect:'manual'` + `no-cors`:** yields an `opaqueredirect` response that
+- **`redirect:'manual'` + `cors`:** yields an `opaqueredirect` response that
   resolves at the in-region 301 (no body) — the intended clean ~1-RTT timing.
-  Verified the 301 originates in-region; the probe-correctness assertion guards it.
+  (`no-cors` + `manual` is invalid and throws — see step 2.) Verified in a real
+  headless browser across 7 regions: all `opaqueredirect`, distinct per-region
+  RTTs (NA ~50ms → Asia-South ~270ms), no errors.
 - **Connection reuse:** HTTP keep-alive is keyed on origin (host:port), so the
   cache-buster query/path does not break reuse; warm samples stay ~1 RTT. A
   dropped connection appears as an outlier, filtered by min/median.

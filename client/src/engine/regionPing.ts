@@ -37,15 +37,23 @@ export type TimeOnce = (url: string, timeoutMs: number) => Promise<number | null
 /**
  * Time one HTTPS round-trip. CRITICAL: redirect:'manual' — ec2.<region>.amazonaws.com
  * 301s to aws.amazon.com; following it would make every region time the SAME host.
- * The opaqueredirect resolves at the in-region 301 (no body), giving a clean ~1-RTT
- * sample on a warm keep-alive connection. Returns ms, or null on timeout/error.
+ * With redirect:'manual' the fetch resolves at the in-region 301 as an
+ * `opaqueredirect` response (no body), giving a clean ~1-RTT sample on a warm
+ * keep-alive connection (verified across regions in a real browser).
+ *
+ * mode MUST be 'cors' (the default), NOT 'no-cors': the Fetch standard forbids
+ * redirect:'manual' with no-cors mode (no-cors requires redirect:'follow'), so
+ * no-cors + manual throws synchronously on every call. cors + manual is the
+ * standard idiom for timing a cross-origin redirect without following it; CORS
+ * response headers aren't needed because an opaqueredirect is unreadable anyway.
+ * Returns ms, or null on timeout/error.
  */
 export const httpsTimeOnce: TimeOnce = async (url, timeoutMs) => {
   const ac = new AbortController()
   const timer = setTimeout(() => ac.abort(), timeoutMs)
   const start = performance.now()
   try {
-    await fetch(url, { mode: 'no-cors', cache: 'no-store', redirect: 'manual', signal: ac.signal })
+    await fetch(url, { mode: 'cors', cache: 'no-store', redirect: 'manual', signal: ac.signal })
     return performance.now() - start
   } catch {
     return null

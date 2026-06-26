@@ -62,7 +62,7 @@ describe('httpsTimeOnce', () => {
     vi.restoreAllMocks()
   })
 
-  it('calls fetch with redirect:manual, mode:no-cors, and cache:no-store', async () => {
+  it('calls fetch with redirect:manual, mode:cors, and cache:no-store', async () => {
     const mockFetch = vi.fn().mockResolvedValue({} as Response)
     vi.stubGlobal('fetch', mockFetch)
 
@@ -70,9 +70,12 @@ describe('httpsTimeOnce', () => {
 
     expect(mockFetch).toHaveBeenCalledOnce()
     const [, options] = mockFetch.mock.calls[0] as [string, RequestInit]
+    // mode MUST be 'cors' (not 'no-cors'): the browser forbids redirect:'manual'
+    // with no-cors mode (no-cors requires redirect:'follow'), which would throw
+    // synchronously on every probe. cors + manual resolves with an opaqueredirect.
     expect(options).toMatchObject({
       redirect: 'manual',
-      mode: 'no-cors',
+      mode: 'cors',
       cache: 'no-store',
     })
   })
