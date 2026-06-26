@@ -3,6 +3,7 @@ import type { ThroughputResult, BufferbloatResult } from '@shared/protocol'
 import type { BloatGrade } from '@shared/grading'
 import { fmtMbps, mbpsBarPct } from '../lib/format'
 import { useLang, t, type Lang } from '../i18n'
+import { InfoTip } from './InfoTip'
 
 function bloatColor(g: BloatGrade | null): string {
   if (g === 'A+' || g === 'A') return 'var(--good)'
@@ -52,7 +53,10 @@ export function Meters({ download, upload, liveDown, liveUp, bufferbloat }: Prop
       <Bar label={t(lang, 'upload')} dir="up" value={ulVal} peak={upload?.peakMbps} lang={lang} />
       <div className="np-bloat">
         <div>
-          <div className="np-bloat-label">{t(lang, 'bufferbloat')}</div>
+          <div className="np-bloat-label">
+            {t(lang, 'bufferbloat')}
+            <InfoTip label={t(lang, 'bufferbloatInfo')}>{t(lang, 'bufferbloatHelp')}</InfoTip>
+          </div>
           <div className="np-bloat-detail">
             {!bb
               ? t(lang, 'latencyUnderLoad')

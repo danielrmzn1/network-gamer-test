@@ -59,6 +59,11 @@ const S = {
   download: { en: 'Download', es: 'Descarga' },
   upload: { en: 'Upload', es: 'Subida' },
   bufferbloat: { en: 'Bufferbloat', es: 'Bufferbloat' },
+  bufferbloatInfo: { en: 'What is bufferbloat?', es: '¿Qué es el bufferbloat?' },
+  bufferbloatHelp: {
+    en: 'Bufferbloat is the lag that shows up when your connection is busy. During a big download or upload, data piles up in a queue and your ping spikes — so games feel laggy even when your speed looks fast. A good grade means your connection stays responsive under load.',
+    es: 'El bufferbloat es la demora que aparece cuando tu conexión está ocupada. Durante una descarga o subida grande, los datos se acumulan en una cola y tu ping se dispara — los juegos se sienten lentos aunque tu velocidad parezca alta. Una buena nota significa que tu conexión sigue respondiendo bajo carga.',
+  },
   latencyUnderLoad: { en: 'latency under load', es: 'latencia bajo carga' },
   couldntMeasure: { en: 'couldn’t measure under load', es: 'no se pudo medir bajo carga' },
   peak: { en: 'peak', es: 'máx' },
