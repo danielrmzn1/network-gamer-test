@@ -1,0 +1,717 @@
+/* ── App shell ───────────────────────────────────────────────────────────── */
+.np-app {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 30px 40px 56px;
+  position: relative;
+}
+/* top edge glow line (gold → teal) */
+.np-app::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 2;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 92, 0.6) 30%, rgba(63, 214, 201, 0.6) 70%, transparent);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.np-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.np-brand {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.np-brand h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 30px;
+  letter-spacing: 1px;
+  color: var(--text-hi);
+}
+.np-brand h1 .mag {
+  color: var(--teal);
+  text-shadow: var(--text-glow-teal);
+}
+.np-brand .np-tag {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-lo);
+}
+.np-hosted-badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  clip-path: var(--cut-6);
+  box-shadow: inset 0 0 0 1px var(--gold-line-strong);
+  padding: 4px 10px;
+}
+
+/* Language toggle */
+.np-lang {
+  display: flex;
+  align-items: center;
+  clip-path: var(--cut-10);
+  box-shadow: inset 0 0 0 1px var(--gold-line-strong);
+}
+.np-lang-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-faint);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  padding: 7px 16px;
+  transition: all 0.15s ease;
+}
+.np-lang-btn[aria-pressed="true"] {
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  color: #0a1521;
+  font-weight: 700;
+}
+.np-lang-btn[aria-pressed="false"]:hover {
+  color: var(--text-mid);
+}
+
+/* ── Game tabs ───────────────────────────────────────────────────────────── */
+.np-gamepicker {
+  margin-top: 22px;
+  margin-bottom: 8px;
+}
+.np-gamepicker .np-label {
+  display: block;
+  margin-bottom: 10px;
+  letter-spacing: 0.25em;
+}
+.np-gamepicker-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.np-game-chip {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  clip-path: var(--cut-8);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: inset 0 0 0 1px var(--gold-line);
+  color: var(--text-body);
+  border: none;
+  transition: all 0.16s ease;
+}
+.np-game-chip:hover {
+  color: var(--text-mid);
+}
+.np-game-chip[aria-pressed="true"] {
+  background: linear-gradient(180deg, rgba(63, 214, 201, 0.22), rgba(63, 214, 201, 0.06));
+  box-shadow: inset 0 0 0 1px rgba(63, 214, 201, 0.55), 0 0 14px rgba(63, 214, 201, 0.22);
+  color: #bff3ee;
+}
+
+/* ── Hero ────────────────────────────────────────────────────────────────── */
+.np-hero-frame {
+  margin-top: 22px;
+}
+.np-hero {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 32px 36px;
+}
+.np-hero-info {
+  flex: 1;
+  min-width: 0;
+}
+.np-hero-eyebrow {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+.np-verdict-line {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(26px, 3.4vw, 40px);
+  line-height: 1.12;
+  color: var(--text-hi);
+  text-wrap: balance;
+}
+.np-verdict-line .hl {
+  color: var(--teal);
+  text-shadow: var(--text-glow-teal);
+}
+.np-verdict-sub {
+  margin: 0 0 22px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-body);
+  max-width: 680px;
+}
+.np-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.np-cta {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #0a1521;
+  background: linear-gradient(180deg, var(--gold-light), var(--gold));
+  border: none;
+  padding: 14px 38px;
+  clip-path: var(--cut-12);
+  box-shadow: var(--glow-gold);
+  transition: filter 0.14s ease, transform 0.12s ease;
+}
+.np-cta:hover {
+  filter: brightness(1.08);
+}
+.np-cta:active {
+  transform: translateY(1px);
+}
+.np-cta[data-running="true"] {
+  background: linear-gradient(180deg, #2a6f78, #1f8f9e);
+  color: #d7faf6;
+  cursor: progress;
+  animation: np-pulse 1.3s ease-in-out infinite;
+}
+@keyframes np-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(63, 214, 201, 0.3); }
+  50% { box-shadow: 0 0 22px rgba(63, 214, 201, 0.6); }
+}
+.np-hero-meta {
+  display: flex;
+  gap: 26px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.np-hero-meta span {
+  color: var(--text-lo);
+}
+.np-hero-meta b {
+  color: var(--text-mid);
+  font-weight: 600;
+}
+
+/* ── Rank crest (gold hex) ───────────────────────────────────────────────── */
+.np-crest {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.np-crest-medallion {
+  position: relative;
+  width: 160px;
+  height: 176px;
+}
+.np-crest-glow {
+  position: absolute;
+  inset: -18px;
+  background: radial-gradient(circle, rgba(224, 166, 75, 0.35), transparent 68%);
+}
+.np-crest-plate {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--hex);
+  background: linear-gradient(160deg, var(--gold-light), var(--gold-deep) 50%, #6f5527);
+}
+.np-crest-inner {
+  position: absolute;
+  inset: 4px;
+  clip-path: var(--hex);
+  background: radial-gradient(circle at 50% 36%, #1a3650, #0a1521 75%);
+  display: grid;
+  place-items: center;
+}
+.np-crest-ring {
+  position: absolute;
+  inset: 4px;
+  clip-path: var(--hex);
+  box-shadow: inset 0 0 0 1px rgba(241, 215, 154, 0.25);
+  pointer-events: none;
+}
+.np-crest-letter {
+  font-family: var(--font-display);
+  font-size: 92px;
+  line-height: 1;
+  color: var(--gold-bright);
+  text-shadow: 0 4px 18px rgba(224, 166, 75, 0.55);
+}
+.np-crest.is-empty .np-crest-letter {
+  color: var(--text-lo);
+  text-shadow: none;
+  opacity: 0.6;
+}
+.np-crest-cap {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── Checks / phase stepper ──────────────────────────────────────────────── */
+.np-stepper {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.np-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  clip-path: var(--cut-8);
+  box-shadow: inset 0 0 0 1px var(--gold-line);
+  background: rgba(255, 255, 255, 0.02);
+}
+.np-step-node {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--text-lo);
+}
+.np-step-label {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-lo);
+}
+.np-step.done {
+  box-shadow: inset 0 0 0 1px var(--teal-line);
+  background: rgba(63, 214, 201, 0.05);
+}
+.np-step.done .np-step-node,
+.np-step.done .np-step-label {
+  color: var(--teal);
+}
+.np-step.done .np-step-label {
+  color: var(--text-mid);
+}
+.np-step.active {
+  box-shadow: inset 0 0 0 1px rgba(201, 168, 92, 0.55);
+  animation: np-pulse 1.3s ease-in-out infinite;
+}
+.np-step.active .np-step-node,
+.np-step.active .np-step-label {
+  color: var(--gold-light);
+}
+
+/* ── Metrics cluster ─────────────────────────────────────────────────────── */
+.np-cluster {
+  display: grid;
+  grid-template-columns: 1.55fr 1fr;
+  gap: 18px;
+}
+.np-gauges {
+  display: flex;
+  justify-content: space-around;
+  gap: 16px;
+  padding: 26px;
+}
+
+/* Arc gauge */
+.np-gauge {
+  --g-color: var(--teal);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.np-gauge.tone-good { --g-color: var(--teal); }
+.np-gauge.tone-warn { --g-color: var(--warn); }
+.np-gauge.tone-bad { --g-color: var(--bad); }
+.np-gauge.tone-neutral { --g-color: var(--teal-dim); }
+.np-gauge svg {
+  width: 128px;
+  height: 128px;
+  overflow: visible;
+}
+.np-gauge-track {
+  stroke: rgba(255, 255, 255, 0.06);
+}
+.np-gauge-fill {
+  stroke: var(--g-color);
+  filter: drop-shadow(0 0 6px var(--g-color));
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+}
+.np-gauge-value {
+  font-family: var(--font-display);
+  font-size: 30px;
+  fill: var(--text-hi);
+}
+.np-gauge-unit {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  fill: var(--text-lo);
+}
+.np-gauge-name {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+.np-gauge-state {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--g-color);
+  margin-top: 3px;
+}
+
+/* ── Throughput + bufferbloat ────────────────────────────────────────────── */
+.np-meters {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 22px;
+  height: 100%;
+}
+.np-meter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.np-meter-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.np-meter-val {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--text-hi);
+}
+.np-meter-val .u {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--text-lo);
+  margin-left: 4px;
+}
+.np-meter-track {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  clip-path: polygon(4px 0, 100% 0, 100% 100%, 0 100%);
+  position: relative;
+}
+.np-meter-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.np-meter-fill.down {
+  background: linear-gradient(90deg, var(--teal-dim), var(--teal));
+  box-shadow: 0 0 10px rgba(63, 214, 201, 0.5);
+}
+.np-meter-fill.up {
+  background: linear-gradient(90deg, var(--up-gold-a), var(--up-gold-b));
+  box-shadow: 0 0 10px rgba(201, 168, 92, 0.45);
+}
+.np-meter-max {
+  text-align: right;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-lo);
+}
+.np-bloat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--gold-line);
+  padding-top: 18px;
+}
+.np-bloat-label {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-body);
+}
+.np-bloat-detail {
+  font-size: 12px;
+  color: var(--text-lo);
+  margin-top: 3px;
+}
+.np-bloat-grade {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  clip-path: var(--cut-10);
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--g, var(--text-faint));
+  box-shadow: inset 0 0 0 2px var(--g, var(--text-faint)), 0 0 16px color-mix(in srgb, var(--g, transparent) 40%, transparent),
+    inset 0 0 12px color-mix(in srgb, var(--g, transparent) 18%, transparent);
+}
+
+/* ── Latency chart ───────────────────────────────────────────────────────── */
+.np-spark {
+  padding: 22px 26px;
+}
+.np-spark-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.np-spark-title {
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.np-spark-meta {
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--text-lo);
+}
+.np-spark canvas {
+  width: 100%;
+  height: 170px;
+  display: block;
+}
+
+/* ── Can-you-play cards ──────────────────────────────────────────────────── */
+.np-cards {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+.np-card {
+  --c: var(--text-lo);
+  position: relative;
+  overflow: hidden;
+  padding: 16px 16px 16px 18px;
+  clip-path: var(--cut-14);
+  text-align: left;
+  border: none;
+  background: linear-gradient(150deg, #0e1d2b, #0a1521);
+  box-shadow: inset 0 0 0 1px var(--gold-line);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+.np-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--c);
+}
+.np-card[data-selected="true"] {
+  background: linear-gradient(150deg, rgba(63, 214, 201, 0.1), #0c1a28);
+  box-shadow: inset 0 0 0 1px rgba(63, 214, 201, 0.45), 0 0 18px rgba(63, 214, 201, 0.15);
+  transform: translateY(-2px);
+}
+.np-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+.np-card-name {
+  font-family: var(--font-display);
+  font-size: 15px;
+  line-height: 1.15;
+  color: var(--text-hi);
+}
+.np-card-genre {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-lo);
+  margin-top: 4px;
+}
+.np-card-rank {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 0.8;
+  color: var(--c);
+  text-shadow: 0 0 12px color-mix(in srgb, var(--c) 30%, transparent);
+}
+.np-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 4px 12px;
+  clip-path: var(--cut-6);
+  box-shadow: inset 0 0 0 1px rgba(224, 166, 75, 0.4);
+}
+.np-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 7px var(--c);
+}
+.np-pill span:last-child {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #e0c490;
+}
+.np-card-reason {
+  font-size: 12px;
+  color: var(--text-faint);
+  margin-top: 10px;
+  line-height: 1.35;
+}
+
+/* ── Region map ──────────────────────────────────────────────────────────── */
+.np-regions {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.np-region-chip {
+  --rc: var(--teal);
+  text-align: left;
+  border: none;
+  padding: 14px 16px;
+  clip-path: var(--cut-12);
+  background: linear-gradient(150deg, #0e1d2b, #0a1521);
+  box-shadow: inset 0 0 0 1px var(--gold-line);
+  transition: box-shadow 0.18s ease;
+}
+.np-region-chip:hover {
+  box-shadow: inset 0 0 0 1px var(--gold-line-strong);
+}
+.np-region-chip[aria-pressed="true"] {
+  background: linear-gradient(150deg, rgba(201, 168, 92, 0.12), #0c1a28);
+  box-shadow: inset 0 0 0 1px rgba(201, 168, 92, 0.5), 0 0 16px rgba(201, 168, 92, 0.18);
+}
+.np-region-name {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+.np-region-metro {
+  font-size: 11px;
+  color: var(--text-lo);
+  margin-top: 2px;
+}
+.np-region-ping {
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--rc);
+}
+.np-region-ping .u {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--text-lo);
+  margin-left: 3px;
+}
+
+/* ── Run-locally panel (hosted mode) ─────────────────────────────────────── */
+.np-runlocal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 20px 24px;
+  clip-path: var(--cut-12);
+  box-shadow: inset 0 0 0 1px var(--gold-line);
+  background: linear-gradient(150deg, var(--bg-inset), var(--bg-base));
+}
+.np-runlocal-title {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.np-runlocal-body {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--text-body);
+  max-width: 62ch;
+}
+.np-runlocal-cmd {
+  font-family: ui-monospace, "Cascadia Mono", Menlo, monospace;
+  font-size: 13px;
+  color: var(--teal);
+  background: var(--bg-void);
+  clip-path: var(--cut-8);
+  box-shadow: inset 0 0 0 1px rgba(63, 214, 201, 0.3);
+  padding: 10px 14px;
+  white-space: nowrap;
+}
+
+/* ── Footer note ─────────────────────────────────────────────────────────── */
+.np-note {
+  margin: 30px 2px 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--gold-line);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-lo);
+  max-width: 1100px;
+}
+.np-note b {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.np-error {
+  padding: 14px 18px;
+  clip-path: var(--cut-10);
+  box-shadow: inset 0 0 0 1px rgba(224, 69, 92, 0.5);
+  color: var(--bad);
+  background: rgba(224, 69, 92, 0.08);
+  margin: 18px 0;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 980px) {
+  .np-cluster { grid-template-columns: 1fr; }
+  .np-cards { grid-template-columns: repeat(3, 1fr); }
+  .np-regions { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 760px) {
+  .np-hero { flex-direction: column; text-align: center; }
+  .np-hero-actions { justify-content: center; }
+  .np-hero-meta { justify-content: center; }
+  .np-cards { grid-template-columns: repeat(2, 1fr); }
+  .np-regions { grid-template-columns: repeat(2, 1fr); }
+  .np-app { padding: 22px 16px 48px; }
+}
+@media (max-width: 460px) {
+  .np-gauges { flex-direction: column; align-items: center; }
+  .np-cards { grid-template-columns: 1fr; }
+  .np-regions { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,7 @@
+# pnpm reads its workspace layout from this file (not the package.json
+# "workspaces" field). The two packages mirror the npm workspaces that were
+# here before. shared/ is NOT a package — it's plain .ts imported by both via
+# the "@shared/*" path alias (tsconfig paths + Vite resolve.alias).
+packages:
+  - server
+  - client

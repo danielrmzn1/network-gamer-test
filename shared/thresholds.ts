@@ -1,0 +1,88 @@
+import type { Genre } from './catalog.types'
+import type { GenreBands } from './thresholds.types'
+
+// Per-genre quality bands (BUILD_SPEC §2.1). All "lower is better" metrics carry
+// four edges great>good>ok>bad; throughput carries good/ok (higher is better).
+export const GENRE_BANDS: Record<Genre, GenreBands> = {
+  'Competitive FPS': {
+    genre: 'Competitive FPS',
+    pingMs: { great: 15, good: 30, ok: 50, bad: 80 },
+    jitterMs: { great: 2, good: 5, ok: 10, bad: 20 },
+    lossPct: { great: 0, good: 0.1, ok: 0.5, bad: 2 },
+    downloadMbps: { good: 25, ok: 10 },
+    uploadMbps: { good: 10, ok: 3 },
+    note: 'High-tick hit-reg is unforgiving; jitter matters as much as raw ping.',
+  },
+  'Tactical FPS': {
+    genre: 'Tactical FPS',
+    pingMs: { great: 15, good: 30, ok: 50, bad: 80 },
+    jitterMs: { great: 2, good: 5, ok: 10, bad: 18 },
+    lossPct: { great: 0, good: 0.1, ok: 0.5, bad: 1.5 },
+    downloadMbps: { good: 30, ok: 15 },
+    uploadMbps: { good: 10, ok: 5 },
+    note: '128-tick; one dropped packet = a missed pre-fire. Tightest loss tolerance.',
+  },
+  'Battle Royale': {
+    genre: 'Battle Royale',
+    pingMs: { great: 20, good: 40, ok: 70, bad: 100 },
+    jitterMs: { great: 3, good: 8, ok: 15, bad: 30 },
+    lossPct: { great: 0, good: 0.2, ok: 0.8, bad: 2.5 },
+    downloadMbps: { good: 50, ok: 15 },
+    uploadMbps: { good: 10, ok: 3 },
+    note: 'Dense end-game scenes want bandwidth headroom; twitch moments behave like Competitive FPS.',
+  },
+  MOBA: {
+    genre: 'MOBA',
+    pingMs: { great: 25, good: 45, ok: 70, bad: 100 },
+    jitterMs: { great: 3, good: 8, ok: 15, bad: 30 },
+    lossPct: { great: 0, good: 0.3, ok: 1, bad: 3 },
+    downloadMbps: { good: 15, ok: 5 },
+    uploadMbps: { good: 5, ok: 1 },
+    note: 'Low bandwidth; ping+jitter dominate. Jitter punishes click-to-move precision.',
+  },
+  Fighting: {
+    genre: 'Fighting',
+    pingMs: { great: 20, good: 45, ok: 80, bad: 120 },
+    jitterMs: { great: 2, good: 6, ok: 12, bad: 25 },
+    lossPct: { great: 0, good: 0.2, ok: 0.8, bad: 2 },
+    downloadMbps: { good: 15, ok: 3 },
+    uploadMbps: { good: 5, ok: 1 },
+    note: 'Rollback netcode tolerates ping but jitter forces inconsistent rollbacks.',
+  },
+  Racing: {
+    genre: 'Racing',
+    pingMs: { great: 30, good: 50, ok: 100, bad: 150 },
+    jitterMs: { great: 3, good: 10, ok: 20, bad: 40 },
+    lossPct: { great: 0, good: 0.3, ok: 1, bad: 3 },
+    downloadMbps: { good: 10, ok: 3 },
+    uploadMbps: { good: 3, ok: 1 },
+    note: 'Tiny bandwidth; latency consistency drives smooth interpolation.',
+  },
+  MMORPG: {
+    genre: 'MMORPG',
+    pingMs: { great: 40, good: 80, ok: 150, bad: 250 },
+    jitterMs: { great: 5, good: 15, ok: 30, bad: 60 },
+    lossPct: { great: 0, good: 0.5, ok: 1.5, bad: 4 },
+    downloadMbps: { good: 25, ok: 5 },
+    uploadMbps: { good: 5, ok: 1 },
+    note: 'GCD/ability-queue forgiving; widest loss/jitter tolerance among action genres.',
+  },
+  'Real-time strategy': {
+    genre: 'Real-time strategy',
+    pingMs: { great: 50, good: 100, ok: 150, bad: 250 },
+    jitterMs: { great: 5, good: 15, ok: 35, bad: 70 },
+    lossPct: { great: 0, good: 0.5, ok: 1.5, bad: 4 },
+    downloadMbps: { good: 10, ok: 3 },
+    uploadMbps: { good: 3, ok: 1 },
+    note: 'Lockstep runs at slowest player; jitter more noticeable than raw latency.',
+  },
+  'Casual/Co-op': {
+    genre: 'Casual/Co-op',
+    pingMs: { great: 50, good: 100, ok: 180, bad: 300 },
+    jitterMs: { great: 8, good: 20, ok: 45, bad: 90 },
+    lossPct: { great: 0, good: 0.5, ok: 2, bad: 5 },
+    downloadMbps: { good: 15, ok: 3 },
+    uploadMbps: { good: 3, ok: 1 },
+    note: 'Most forgiving; the floor against which stricter genres are graded.',
+  },
+}

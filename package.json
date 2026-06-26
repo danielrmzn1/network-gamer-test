@@ -1,0 +1,28 @@
+{
+  "name": "netpulse",
+  "private": true,
+  "version": "1.0.0",
+  "description": "NETPULSE — a gamer-grade network quality report (ping, jitter, packet loss, bufferbloat, per-game verdicts)",
+  "type": "module",
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "dev": "concurrently -k -n SERVER,CLIENT -c magenta,cyan \"pnpm:dev:server\" \"pnpm:dev:client\"",
+    "dev:server": "pnpm --filter server run dev",
+    "dev:client": "pnpm --filter client run dev",
+    "build": "pnpm --filter client run build",
+    "start": "pnpm --filter server run start",
+    "typecheck": "pnpm --filter server run typecheck && pnpm --filter client run typecheck"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}
