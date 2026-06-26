@@ -34,6 +34,7 @@ interface Measured {
   idleMedian: number
   loadedMedianDown: number | null // null = no loaded samples collected
   loadedMedianUp: number | null
+  lossMethod: 'stun-udp' | 'webrtc'
 }
 
 /** Worst measured loss across idle/loaded runs, or null if neither could be measured. */
@@ -119,7 +120,7 @@ export function assembleReport(m: Measured, selectedGameId: string, region: Regi
   })
 
   const loss: LossSummary = {
-    method: m.lossIdle?.available || m.lossLoaded?.available ? 'stun-udp' : 'unavailable',
+    method: m.lossIdle?.available || m.lossLoaded?.available ? m.lossMethod : 'unavailable',
     idle: m.lossIdle,
     loaded: m.lossLoaded,
     lossPct,
@@ -154,6 +155,7 @@ function measuredFromStore(): Measured {
     idleMedian: s.idleMedian,
     loadedMedianDown: s.loadedDownMedian,
     loadedMedianUp: s.loadedUpMedian,
+    lossMethod: s.mode === 'hosted' ? 'webrtc' : 'stun-udp',
   }
 }
 
@@ -257,6 +259,7 @@ async function runLocal(opts: { gameId: string; region: Region | null }): Promis
       idleMedian,
       loadedMedianDown,
       loadedMedianUp,
+      lossMethod: 'stun-udp',
     }
     const report = assembleReport(measured, opts.gameId, chosenRegion)
     store.set({
@@ -388,6 +391,7 @@ async function runHosted(opts: { gameId: string; region: Region | null }): Promi
       idleMedian,
       loadedMedianDown,
       loadedMedianUp,
+      lossMethod: 'webrtc',
     }
     const report = assembleHostedReport(measured, opts.gameId, idleJitter)
     store.set({
