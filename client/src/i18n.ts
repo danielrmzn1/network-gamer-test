@@ -13,6 +13,11 @@ function initial(): Lang {
     const v = localStorage.getItem('fragrate-lang')
     if (v === 'es' || v === 'en') return v
   } catch { /* ignore */ }
+  // No saved choice — fall back to the browser/system locale.
+  try {
+    const langs = navigator.languages?.length ? navigator.languages : [navigator.language]
+    if (langs.some((l) => l?.toLowerCase().startsWith('es'))) return 'es'
+  } catch { /* ignore */ }
   return 'en'
 }
 let current: Lang = initial()
