@@ -3,6 +3,7 @@ import type { Genre } from '@shared/catalog.types'
 import type { VerdictState } from '@shared/grading'
 import type { PhaseName } from '@shared/protocol'
 import type { Tone } from './lib/tone'
+import type { RunMode } from './engine/mode'
 
 export type Lang = 'en' | 'es'
 
@@ -46,6 +47,7 @@ const S = {
   throughputVia: { en: 'Throughput via', es: 'Throughput vía' },
   lossMethodLabel: { en: 'Loss method', es: 'Método de pérdida' },
   latencyTcp: { en: 'Latency = TCP handshake to region proxies', es: 'Latencia = handshake TCP a proxies de región' },
+  latencyHttps: { en: 'Latency = HTTPS RTT to region endpoints', es: 'Latencia = RTT HTTPS a endpoints de región' },
   gaugePing: { en: 'Ping', es: 'Ping' },
   gaugeJitter: { en: 'Jitter', es: 'Jitter' },
   gaugeLoss: { en: 'Loss', es: 'Pérdida' },
@@ -69,15 +71,16 @@ const S = {
     en: 'Run a full network check — ping to real game regions, jitter, UDP packet loss and bufferbloat — and get a straight answer for every game, not just a speed number.',
     es: 'Ejecuta un análisis de red completo — ping a regiones reales de cada juego, jitter, pérdida de paquetes UDP y bufferbloat — y obtén una respuesta clara para cada juego, no solo un número de velocidad.',
   },
-  hostedBadge: { en: 'Hosted demo', es: 'Demo en línea' },
-  runLocallyTitle: { en: 'Per-game server ping', es: 'Ping por servidor de juego' },
-  runLocallyBody: {
-    en: 'Real ping and packet loss to each game’s regional servers need raw network access a browser can’t do. Run FRAGRATE locally to unlock the full per-game, per-region report.',
-    es: 'El ping y la pérdida reales a los servidores regionales de cada juego requieren acceso de red que el navegador no permite. Ejecuta FRAGRATE localmente para el reporte completo por juego y región.',
+  hostedBadge: { en: 'Hosted', es: 'En línea' },
+  hostedRegionNote: {
+    en: 'Measured in your browser (HTTPS RTT + last-mile loss). Want raw-socket precision — exact UDP ping and true per-region loss? Run FRAGRATE locally.',
+    es: 'Medido en tu navegador (RTT HTTPS + pérdida de última milla). ¿Quieres precisión de sockets crudos — ping UDP exacto y pérdida real por región? Ejecuta FRAGRATE localmente.',
   },
-  runLocallyCta: { en: '⬇ How to run locally', es: '⬇ Cómo ejecutarlo localmente' },
-  internetRtt: { en: 'internet RTT', es: 'RTT de Internet' },
-  hostedApprox: { en: '(approx — run locally for true per-game ping)', es: '(aprox — ejecútalo localmente para el ping real por juego)' },
+  hostedRegionUnreachable: {
+    en: 'Couldn’t reach the region endpoints from your browser. Run FRAGRATE locally for per-game-region ping.',
+    es: 'No se pudo alcanzar los endpoints de región desde tu navegador. Ejecuta FRAGRATE localmente para el ping por región.',
+  },
+  gradedOn: { en: 'Verdict graded on', es: 'Veredicto evaluado en' },
 } satisfies Record<string, Entry>
 
 export type StrKey = keyof typeof S
@@ -117,7 +120,12 @@ const REASON: Record<string, Entry> = {
   bufferbloat: { en: 'bufferbloat', es: 'el bufferbloat' },
   throughput: { en: 'throughput', es: 'el ancho de banda' },
 }
-export function reasonWord(l: Lang, r: string): string {
+const REASON_HOSTED_LOSS: Entry = {
+  en: 'your connection (last-mile loss)',
+  es: 'tu conexión (pérdida de última milla)',
+}
+export function reasonWord(l: Lang, r: string, mode?: 'local' | 'hosted'): string {
+  if (mode === 'hosted' && r === 'packet loss') return REASON_HOSTED_LOSS[l]
   return REASON[r]?.[l] ?? r
 }
 
@@ -169,11 +177,11 @@ export function heroVerdict(l: Lang, state: VerdictState): { pre: string; post: 
   if (state === 'RISKY') return { pre: 'Playable, but rough for ', post: '.' }
   return { pre: 'Not ready for ', post: ' right now.' }
 }
-export function weakPointText(l: Lang, reason: string | null): string {
+export function weakPointText(l: Lang, reason: string | null, mode?: 'local' | 'hosted'): string {
   if (reason) {
     return l === 'es'
-      ? `Tu punto débil es ${reasonWord('es', reason)}. `
-      : `Your weak point is ${reasonWord('en', reason)}. `
+      ? `Tu punto débil es ${reasonWord('es', reason, mode)}. `
+      : `Your weak point is ${reasonWord('en', reason, mode)}. `
   }
   return l === 'es'
     ? 'Todas las métricas clave están en rango para este juego. '
@@ -183,7 +191,12 @@ export function lossText(l: Lang, loss: number | null, fmt: (n: number | null, d
   if (loss == null) return l === 'es' ? 'pérdida n/d' : 'packet loss n/a'
   return l === 'es' ? `${fmt(loss, 1)}% de pérdida` : `${fmt(loss, 1)}% packet loss`
 }
-export function noteBody(l: Lang, backend: string): string {
+export function noteBody(l: Lang, backend: string, mode: RunMode | 'unknown'): string {
+  if (mode === 'hosted') {
+    return l === 'es'
+      ? `La latencia por región es el RTT HTTPS desde tu navegador a un endpoint público en la región real de cada juego (algo por encima del ping UDP crudo). La pérdida de paquetes es la pérdida UDP de última milla medida por WebRTC vía Cloudflare TURN — es de tu conexión, no por región. El throughput y el bufferbloat se miden contra los endpoints públicos de ${backend}. Para ping UDP exacto y pérdida real por región, ejecuta FRAGRATE localmente.`
+      : `Per-region latency is the HTTPS RTT from your browser to a public endpoint in each game’s real datacenter region (somewhat above raw UDP ping). Packet loss is your last-mile UDP loss measured via WebRTC through Cloudflare TURN — it’s your connection’s loss, not per region. Throughput & bufferbloat run against ${backend}’s public speed endpoints. For exact UDP ping and true per-region loss, run FRAGRATE locally.`
+  }
   return l === 'es'
     ? `La latencia es el tiempo de handshake TCP desde tu equipo a un endpoint público en la región real de cada juego — un proxy de ping sin permisos de root que confirma alcanzabilidad. La pérdida de paquetes y el jitter UDP provienen de sondas STUN/UDP a servidores STUN públicos (UDP real de Internet). El throughput y el bufferbloat se miden contra los endpoints públicos de ${backend}. Los veredictos aplican los umbrales por género de cada juego a tu conexión medida.`
     : `Latency is the TCP-handshake time from your machine to a public endpoint in each game’s real datacenter region — a root-free, reachability-confirming ping proxy. Packet loss & UDP jitter come from STUN/UDP probes to public STUN servers (real internet UDP). Throughput & bufferbloat run against ${backend}’s public speed endpoints. Verdicts apply each game’s genre-specific thresholds to your measured connection.`

@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react'
 import type { VerdictState } from '@shared/grading'
 import type { Genre } from '@shared/catalog.types'
+import type { RunMode } from '../engine/mode'
 import { useLang, t, verdictWord, reasonWord, genreLabel } from '../i18n'
 
 /** Grade letter -> semantic color (matches the design's gradeColor). */
@@ -18,11 +19,12 @@ interface Props {
   rank?: string
   state?: VerdictState
   reason?: string | null
+  mode?: RunMode
   selected: boolean
   onSelect: () => void
 }
 
-export function GameCard({ name, genre, rank, state, reason, selected, onSelect }: Props) {
+export function GameCard({ name, genre, rank, state, reason, mode, selected, onSelect }: Props) {
   const lang = useLang()
   return (
     <button
@@ -48,7 +50,7 @@ export function GameCard({ name, genre, rank, state, reason, selected, onSelect 
         {state ? (
           reason ? (
             <>
-              {t(lang, 'limitedBy')} {reasonWord(lang, reason)}
+              {t(lang, 'limitedBy')} {reasonWord(lang, reason, mode)}
             </>
           ) : (
             t(lang, 'allInRange')
