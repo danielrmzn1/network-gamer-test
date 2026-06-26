@@ -172,10 +172,18 @@ export function recompute(opts: { region?: Region; gameId?: string }): void {
   }
   const gameId = opts.gameId ?? s.selectedGameId
   if (s.mode === 'hosted') {
-    // No regions in hosted mode — just re-grade with the same browser metrics.
-    const idleJitter = s.report.selectedPing?.jitter ?? 0
-    const report = assembleHostedReport(measuredFromStore(), gameId, idleJitter)
-    store.set({ selectedGameId: gameId, report }, true)
+    const m = measuredFromStore()
+    const hasRegionData = Object.values(m.regions).some((r) => r.median != null)
+    if (hasRegionData) {
+      const region = opts.region ?? s.selectedRegion
+      const report = assembleReport(m, gameId, region)
+      store.set({ selectedGameId: gameId, selectedRegion: report.region, report }, true)
+    } else {
+      // No reachable regions — re-grade against the generic internet RTT.
+      const idleJitter = s.report.selectedPing?.jitter ?? 0
+      const report = assembleHostedReport(m, gameId, idleJitter)
+      store.set({ selectedGameId: gameId, report }, true)
+    }
     return
   }
   const region = opts.region ?? s.selectedRegion
