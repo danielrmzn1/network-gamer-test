@@ -3,6 +3,7 @@ import { useEngine, store } from './state/store'
 import { runTest, recompute } from './engine/orchestrator'
 import { detectMode } from './engine/mode'
 import { GAMES, GAME_BY_ID, gameRegions } from '@shared/catalog'
+import { REGION_BY_ID } from '@shared/regions'
 import { GENRE_BANDS } from '@shared/thresholds'
 import type { Region } from '@shared/catalog.types'
 import { Hero } from './components/Hero'
@@ -147,25 +148,27 @@ export default function App() {
       <div className="np-section-title">
         <span className="np-eyebrow">{t(lang, 'regionMap')}</span>
       </div>
-      {s.mode === 'hosted' ? (
-        <div className="np-runlocal">
-          <div>
-            <div className="np-runlocal-title">{t(lang, 'runLocallyTitle')}</div>
-            <p className="np-runlocal-body">{t(lang, 'runLocallyBody')}</p>
-          </div>
-          <code className="np-runlocal-cmd">pnpm install &amp;&amp; pnpm dev</code>
-        </div>
-      ) : (
-        <RegionSelector
-          regions={s.regions}
-          selected={s.selectedRegion}
-          allowed={gameRegions(s.selectedGameId)}
-          onSelect={onPickRegion}
-        />
+      <RegionSelector
+        regions={s.regions}
+        selected={s.selectedRegion}
+        allowed={gameRegions(s.selectedGameId)}
+        onSelect={onPickRegion}
+      />
+      {s.mode === 'hosted' && (
+        <p className="np-runlocal-note">
+          {Object.values(s.regions).some((r) => r.received > 0)
+            ? t(lang, 'hostedRegionNote')
+            : t(lang, 'hostedRegionUnreachable')}
+        </p>
+      )}
+      {s.mode === 'hosted' && s.report && Object.values(s.regions).some((r) => r.received > 0) && (
+        <p className="np-region-graded">
+          {t(lang, 'gradedOn')} {REGION_BY_ID[s.report.region].label}
+        </p>
       )}
 
       <p className="np-note">
-        <b>{noteTitle[lang]}</b> {noteBody(lang, s.backendLabel || 'Cloudflare')}
+        <b>{noteTitle[lang]}</b> {noteBody(lang, s.backendLabel || 'Cloudflare', s.mode)}
       </p>
     </div>
   )

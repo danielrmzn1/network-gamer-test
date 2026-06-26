@@ -49,9 +49,8 @@ function VerdictText({ lang, state, game }: { lang: Lang; state: EngineState; ga
   const dl = fmtMbps(report?.download?.meanMbps)
   const ul = fmtMbps(report?.upload?.meanMbps)
   const hv = heroVerdict(lang, v?.state ?? 'NO')
-  const hosted = state.mode === 'hosted'
-  const where = hosted ? t(lang, 'internetRtt') : lang === 'es' ? `a ${regionLabel}` : `to ${regionLabel}`
-  const tail = hosted ? ` ${t(lang, 'hostedApprox')}` : ''
+  const where = lang === 'es' ? `a ${regionLabel}` : `to ${regionLabel}`
+  const tail = ''
   const metrics =
     lang === 'es'
       ? `${weakPointText('es', v?.reason ?? null)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, bufferbloat ${bloat}.${tail}`
@@ -71,6 +70,7 @@ function VerdictText({ lang, state, game }: { lang: Lang; state: EngineState; ga
 
 export function Hero({ state, game, onRun }: { state: EngineState; game: Game; onRun: () => void }) {
   const lang = useLang()
+  const hosted = state.mode === 'hosted'
   const running = state.status === 'running'
   const v = state.report?.verdicts.find((x) => x.gameId === game.id)
   const rank = state.status === 'done' ? v?.rank ?? state.report?.overallRank ?? null : null
@@ -102,7 +102,7 @@ export function Hero({ state, game, onRun }: { state: EngineState; game: Game; o
                   <b>{lossMethod === 'stun-udp' ? 'STUN/UDP' : lossMethod === 'webrtc' ? 'WebRTC' : 'n/a'}</b>
                 </span>
               )}
-              <span>{t(lang, 'latencyTcp')}</span>
+              <span>{t(lang, hosted ? 'latencyHttps' : 'latencyTcp')}</span>
             </div>
           </div>
         </div>
