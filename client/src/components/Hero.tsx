@@ -77,6 +77,11 @@ export function Hero({ state, game, onRun }: { state: EngineState; game: Game; o
   const rank = state.status === 'done' ? v?.rank ?? state.report?.overallRank ?? null : null
   const ctaLabel = running ? t(lang, 'testing') : state.status === 'done' ? t(lang, 'runAgain') : t(lang, 'runTest')
   const lossMethod = state.report?.loss?.method
+  // Region shown in the eyebrow: the graded region after a run, otherwise the
+  // currently selected region (so it's visible before running and updates live
+  // when a different region is picked on the map).
+  const eyebrowRegionId = state.report?.region ?? state.selectedRegion
+  const eyebrowRegion = eyebrowRegionId ? REGION_BY_ID[eyebrowRegionId]?.label : null
 
   return (
     <Frame hero className="np-hero-frame">
@@ -85,6 +90,7 @@ export function Hero({ state, game, onRun }: { state: EngineState; game: Game; o
         <div className="np-hero-info">
           <div className="np-hero-eyebrow">
             {t(lang, 'verdict')} · {game.name}
+            {eyebrowRegion ? ` · ${eyebrowRegion}` : ''}
           </div>
           <VerdictText lang={lang} state={state} game={game} />
           <div className="np-hero-actions">

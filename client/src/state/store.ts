@@ -73,8 +73,8 @@ class EngineStore {
   private listeners = new Set<() => void>()
   private flushTimer: ReturnType<typeof setTimeout> | null = null
 
-  constructor(defaultGameId: string) {
-    this.state = initialState(defaultGameId)
+  constructor(defaultGameId: string, defaultRegion: Region | null = null) {
+    this.state = { ...initialState(defaultGameId), selectedRegion: defaultRegion }
     this.subscribe = this.subscribe.bind(this)
     this.getSnapshot = this.getSnapshot.bind(this)
   }
@@ -133,7 +133,7 @@ class EngineStore {
   }
 }
 
-export const store = new EngineStore('valorant')
+export const store = new EngineStore('lol', 'LATAM-North')
 
 export function useEngine(): EngineState {
   return useSyncExternalStore(store.subscribe, store.getSnapshot)

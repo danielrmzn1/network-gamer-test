@@ -6,6 +6,21 @@ import type { Game, Region } from './catalog.types'
 // gameservers (Minecraft Java) are measured directly.
 export const GAMES: Game[] = [
   {
+    id: 'lol', name: 'League of Legends', genre: 'MOBA', publisher: 'Riot Games',
+    endpoints: [
+      { region: 'NA-Central', label: 'NA (Chicago→Ohio)', host: 'ec2.us-east-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
+      { region: 'NA-East', label: 'NA East alt (Virginia)', host: 'ec2.us-east-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'medium' },
+      { region: 'NA-West', label: 'NA West (Oregon)', host: 'ec2.us-west-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'medium' },
+      { region: 'EU-West', label: 'EUW (Amsterdam→Ireland)', host: 'ec2.eu-west-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
+      { region: 'EU-Central', label: 'EUNE (Frankfurt)', host: 'ec2.eu-central-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
+      { region: 'Asia-Korea', label: 'Korea (Seoul)', host: 'ec2.ap-northeast-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
+      { region: 'Asia-SE', label: 'SEA (Singapore)', host: 'ec2.ap-southeast-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
+      { region: 'OCE', label: 'OCE (Sydney)', host: 'ec2.ap-southeast-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
+      { region: 'LATAM-North', label: 'LAN — Latin America North (Mexico)', host: 'ec2.mx-central-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'medium' },
+      { region: 'SA-East', label: 'LAS / BR (São Paulo)', host: 'ec2.sa-east-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
+    ],
+  },
+  {
     id: 'valorant', name: 'VALORANT', genre: 'Tactical FPS', publisher: 'Riot Games',
     endpoints: [
       { region: 'NA-East', label: 'NA East (Ashburn, VA)', host: 'ec2.us-east-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
@@ -20,21 +35,6 @@ export const GAMES: Game[] = [
       { region: 'OCE', label: 'Oceania (Sydney)', host: 'ec2.ap-southeast-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
       { region: 'SA-East', label: 'SA East (São Paulo)', host: 'ec2.sa-east-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
       { region: 'ME-Central', label: 'MENA (UAE proxy)', host: 'ec2.me-central-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'medium' },
-    ],
-  },
-  {
-    id: 'lol', name: 'League of Legends', genre: 'MOBA', publisher: 'Riot Games',
-    endpoints: [
-      { region: 'NA-Central', label: 'NA (Chicago→Ohio)', host: 'ec2.us-east-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
-      { region: 'NA-East', label: 'NA East alt (Virginia)', host: 'ec2.us-east-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'medium' },
-      { region: 'NA-West', label: 'NA West (Oregon)', host: 'ec2.us-west-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'medium' },
-      { region: 'EU-West', label: 'EUW (Amsterdam→Ireland)', host: 'ec2.eu-west-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
-      { region: 'EU-Central', label: 'EUNE (Frankfurt)', host: 'ec2.eu-central-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
-      { region: 'Asia-Korea', label: 'Korea (Seoul)', host: 'ec2.ap-northeast-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
-      { region: 'Asia-SE', label: 'SEA (Singapore)', host: 'ec2.ap-southeast-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
-      { region: 'OCE', label: 'OCE (Sydney)', host: 'ec2.ap-southeast-2.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
-      { region: 'LATAM-North', label: 'LAN — Latin America North (Mexico)', host: 'ec2.mx-central-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'medium' },
-      { region: 'SA-East', label: 'LAS / BR (São Paulo)', host: 'ec2.sa-east-1.amazonaws.com', port: 443, kind: 'cloud-proxy', confidence: 'high' },
     ],
   },
   {

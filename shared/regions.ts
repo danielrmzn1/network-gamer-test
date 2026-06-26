@@ -13,6 +13,7 @@ export interface RegionInfo {
 }
 
 export const REGIONS: RegionInfo[] = [
+  { region: 'LATAM-North', label: 'LATAM North', metro: 'Mexico City', host: 'ec2.mx-central-1.amazonaws.com', port: 443 },
   { region: 'NA-East', label: 'NA East', metro: 'Virginia', host: 'ec2.us-east-1.amazonaws.com', port: 443 },
   { region: 'NA-Central', label: 'NA Central', metro: 'Ohio / Chicago', host: 'ec2.us-east-2.amazonaws.com', port: 443 },
   { region: 'NA-West', label: 'NA West', metro: 'Oregon', host: 'ec2.us-west-2.amazonaws.com', port: 443 },
@@ -24,7 +25,6 @@ export const REGIONS: RegionInfo[] = [
   { region: 'Asia-South', label: 'India', metro: 'Mumbai', host: 'ec2.ap-south-1.amazonaws.com', port: 443 },
   { region: 'OCE', label: 'Oceania', metro: 'Sydney', host: 'ec2.ap-southeast-2.amazonaws.com', port: 443 },
   { region: 'SA-East', label: 'SA East', metro: 'São Paulo', host: 'ec2.sa-east-1.amazonaws.com', port: 443 },
-  { region: 'LATAM-North', label: 'LATAM North', metro: 'Mexico City', host: 'ec2.mx-central-1.amazonaws.com', port: 443 },
   { region: 'ME-Central', label: 'Middle East', metro: 'UAE', host: 'ec2.me-central-1.amazonaws.com', port: 443 },
 ]
 
