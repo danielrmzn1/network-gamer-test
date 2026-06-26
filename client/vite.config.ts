@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath } from 'node:url'
 
 const SERVER = 'http://localhost:8787'
@@ -8,7 +9,7 @@ const sharedDir = fileURLToPath(new URL('../shared', import.meta.url))
 // During dev, Vite serves the UI on :5173 and proxies all network-test
 // traffic to the Node measurement server on :8787 (same-origin in prod).
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: { '@shared': sharedDir },
   },
