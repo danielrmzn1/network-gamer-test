@@ -36,6 +36,14 @@
   --font-display: "Marcellus SC", "Trajan Pro", "Times New Roman", serif;
   --font-ui: "Rajdhani", system-ui, -apple-system, "Segoe UI", sans-serif;
 
+  /* The original design never set a line-height except via explicit rules
+     (preserved as leading-* utilities); everything else inherited `normal`.
+     Neutralize the line-heights Tailwind bundles into these named sizes so
+     they don't grow the vertical rhythm. */
+  --text-xs--line-height: normal;
+  --text-base--line-height: normal;
+  --text-2xl--line-height: normal;
+
   /* Shadows / glows */
   --shadow-glow-teal: 0 0 18px rgb(63 214 201 / 0.5);
   --shadow-glow-gold: 0 6px 22px rgb(201 168 92 / 0.35);
@@ -73,6 +81,9 @@
   #root {
     margin: 0;
     min-height: 100%;
+    /* Revert Tailwind preflight's line-height:1.5 to the original inherited
+       `normal`; explicit leading-* utilities still override where needed. */
+    line-height: normal;
   }
 
   body {
