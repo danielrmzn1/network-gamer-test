@@ -61,7 +61,7 @@ export function Meters({ download, upload, liveDown, liveUp, bufferbloat }: Prop
       <Bar label={t(lang, 'upload')} dir="up" value={ulVal} peak={upload?.peakMbps} lang={lang} />
       <div className="flex items-center justify-between [border-top:1px_solid_var(--gold-line)] pt-[18px]">
         <div>
-          <div className="text-xs tracking-[0.16em] uppercase text-ink-body">
+          <div className="flex items-center gap-[7px] text-xs tracking-[0.16em] uppercase text-ink-body">
             {t(lang, 'bufferbloat')}
             <InfoTip label={t(lang, 'bufferbloatInfo')}>{t(lang, 'bufferbloatHelp')}</InfoTip>
           </div>
