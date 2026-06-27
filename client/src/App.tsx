@@ -19,6 +19,7 @@ import { toneLower, gaugeMax } from './lib/tone'
 import { useLang, rememberLang, preferredLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody } from './i18n'
 import { Seo } from './seo/Seo'
 import { SITE_URL } from './seo/config'
+import { variantPath } from './seo/gameContent'
 
 const LANG_BTN =
   'bg-transparent border-none text-ink-faint font-ui text-[13px] font-semibold tracking-[0.14em] px-4 py-[7px] [transition:all_0.15s_ease] aria-pressed:bg-gradient-to-b aria-pressed:from-gold-light aria-pressed:to-gold aria-pressed:text-abyss aria-pressed:font-bold aria-[pressed=false]:hover:text-ink-mid'
@@ -264,7 +265,7 @@ export default function App() {
           {GAMES.map((g) => (
             <Link
               key={g.id}
-              to={`/${g.id}-ping-test`}
+              to={variantPath(g.id, 'ping-test', lang)}
               className="text-[13px] text-ink-body no-underline hover:text-teal"
             >
               {g.name} {lang === 'es' ? 'ping' : 'ping test'}
