@@ -31,7 +31,7 @@
   align-items: baseline;
   gap: 16px;
 }
-.np-brand h1 {
+.np-brand .np-wordmark {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
@@ -39,7 +39,7 @@
   letter-spacing: 1px;
   color: var(--text-hi);
 }
-.np-brand h1 .mag {
+.np-brand .np-wordmark .mag {
   color: var(--teal);
   text-shadow: var(--text-glow-teal);
 }

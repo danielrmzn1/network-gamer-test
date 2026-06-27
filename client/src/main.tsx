@@ -1,10 +1,9 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
+import { ViteReactSSG } from 'vite-react-ssg'
+import { routes } from './routes'
 import './styles/global.css'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+// vite-react-ssg entry. It prerenders `routes` to static HTML at build time
+// (so crawlers and AI bots get real content) and hydrates them on the client.
+// Replaces the old `createRoot(document.getElementById('root')).render(...)`
+// SPA mount — the build/hydration is now driven by this exported createRoot.
+export const createRoot = ViteReactSSG({ routes })

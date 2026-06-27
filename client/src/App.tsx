@@ -15,12 +15,17 @@ import { GameCard } from './components/GameCard'
 import { RegionSelector } from './components/RegionSelector'
 import { PhaseStepper } from './components/PhaseStepper'
 import { toneLower, gaugeMax } from './lib/tone'
-import { useLang, setLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody } from './i18n'
+import { useNavigate } from 'react-router-dom'
+import { useLang, rememberLang, preferredLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody } from './i18n'
+import { Link } from 'react-router-dom'
+import { Seo } from './seo/Seo'
+import { SITE_URL } from './seo/config'
 import './styles/components.css'
 
 export default function App() {
   const s = useEngine()
   const lang = useLang()
+  const navigate = useNavigate()
   const game = GAME_BY_ID[s.selectedGameId] ?? GAMES[0]
   const bands = GENRE_BANDS[game.genre]
 
@@ -40,27 +45,91 @@ export default function App() {
   }
   const onPickRegion = (r: Region): void => recompute({ region: r })
 
-  // Detect once whether the local measurement server is present (full mode) or
-  // we're a static Cloudflare Worker deploy (hosted mode).
+  // On mount (client only): a first-time visitor who prefers Spanish and lands
+  // on the default English route is redirected to /es/. Googlebot (US IP, no
+  // Accept-Language) won't trigger this, so '/' stays indexed as English.
+  // Then detect local (full) vs hosted (browser-only) mode.
   useEffect(() => {
+    if (lang === 'en' && preferredLang() === 'es') navigate('/es', { replace: true })
+    // Deep link from a per-game page ("Run the test" → /?game=<id>) preselects it.
+    const q = new URLSearchParams(window.location.search).get('game')
+    if (q && GAME_BY_ID[q]) {
+      store.set({ selectedGameId: q })
+      recompute({ gameId: q })
+    }
     void detectMode().then((m) => store.set({ mode: m }, true))
-  }, [])
+  }, [lang, navigate])
+
+  const path = lang === 'es' ? '/es' : '/'
+  const alternates = [
+    { hreflang: 'en', path: '/' },
+    { hreflang: 'es', path: '/es' },
+    { hreflang: 'x-default', path: '/' },
+  ]
+
+  const seo =
+    lang === 'es'
+      ? {
+          title: 'Test de Ping, Pérdida de Paquetes y Bufferbloat para Gamers — FRAGRATE',
+          description:
+            'Mide ping, jitter, pérdida de paquetes UDP y bufferbloat hacia regiones reales de juego y obtén un veredicto Jugable / Riesgoso / No apto por cada juego.',
+        }
+      : {
+          title: 'Gaming Ping, Packet Loss & Bufferbloat Test — FRAGRATE',
+          description:
+            'Free gamer network test: ping, jitter, UDP packet loss and bufferbloat to real game regions — with a per-game Playable / Risky / No-go verdict.',
+        }
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'FRAGRATE',
+    url: `${SITE_URL}${path}`,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Web',
+    browserRequirements: 'Requires JavaScript',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description: seo.description,
+  }
 
   return (
     <div className="np-app">
+      <Seo
+        title={seo.title}
+        description={seo.description}
+        path={path}
+        locale={lang}
+        alternates={alternates}
+        jsonLd={jsonLd}
+      />
       <header className="np-header">
         <div className="np-brand">
-          <h1>
+          <div className="np-wordmark">
             FRAG<span className="mag">RATE</span>
-          </h1>
+          </div>
           <span className="np-tag">{t(lang, 'tagline')}</span>
           {s.mode === 'hosted' && <span className="np-hosted-badge">{t(lang, 'hostedBadge')}</span>}
         </div>
         <div className="np-lang" role="group" aria-label="Language">
-          <button type="button" className="np-lang-btn" aria-pressed={lang === 'en'} onClick={() => setLang('en')}>
+          <button
+            type="button"
+            className="np-lang-btn"
+            aria-pressed={lang === 'en'}
+            onClick={() => {
+              rememberLang('en')
+              navigate('/')
+            }}
+          >
             EN
           </button>
-          <button type="button" className="np-lang-btn" aria-pressed={lang === 'es'} onClick={() => setLang('es')}>
+          <button
+            type="button"
+            className="np-lang-btn"
+            aria-pressed={lang === 'es'}
+            onClick={() => {
+              rememberLang('es')
+              navigate('/es')
+            }}
+          >
             ES
           </button>
         </div>
@@ -171,6 +240,17 @@ export default function App() {
       <p className="np-note">
         <b>{noteTitle[lang]}</b> {noteBody(lang, s.backendLabel || 'Cloudflare', s.mode)}
       </p>
+
+      <footer className="np-footer">
+        <span className="np-footer-label">{lang === 'es' ? 'Guías por juego' : 'Per-game guides'}</span>
+        <nav className="np-footer-links">
+          {GAMES.map((g) => (
+            <Link key={g.id} to={`/${g.id}-ping-test`} className="np-footer-link">
+              {g.name} {lang === 'es' ? 'ping' : 'ping test'}
+            </Link>
+          ))}
+        </nav>
+      </footer>
     </div>
   )
 }

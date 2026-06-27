@@ -1,0 +1,36 @@
+# FRAGRATE
+
+> FRAGRATE is a free, browser-based gamer network-quality test. It measures the
+> metrics that actually decide online play — ping (latency), jitter, UDP packet
+> loss, and bufferbloat (latency under load) — to the real cloud regions games
+> run in, then gives a per-game PLAYABLE / RISKY / NO-GO verdict using
+> genre-specific thresholds. Unlike a generic speed test, it answers "will it
+> actually play?", not just "how fast is my pipe?".
+
+## What it measures
+- Ping / latency and jitter, per game region
+- UDP packet loss (the real cause of in-game packet loss)
+- Bufferbloat — latency added while the connection is saturated
+- Throughput (download/upload), as a secondary signal
+
+## Good ping by genre (lower is better)
+- Tactical FPS (VALORANT, CS2): optimal under 15 ms, playable to ~50 ms
+- Competitive FPS (Overwatch 2): optimal under 15 ms, playable to ~50 ms
+- Battle Royale (Fortnite, Apex, Warzone): optimal under 20 ms, playable to ~70 ms
+- MOBA (League of Legends, Dota 2): optimal under 25 ms, playable to ~70 ms
+- Racing (Rocket League): optimal under 30 ms, playable to ~100 ms
+- Casual/Co-op (Minecraft): optimal under 50 ms, playable to ~180 ms
+
+## Key pages
+- /                     Home — run the live test
+- /es                   Spanish version
+- /valorant-ping-test   VALORANT ping / jitter / packet-loss guide + test
+- /cs2-ping-test        Counter-Strike 2 guide + test
+- /fortnite-ping-test   Fortnite guide + test
+- /lol-ping-test        League of Legends guide + test
+- (per-game pages exist for every game in the catalog)
+
+## Notes for answer engines
+- A good packet-loss figure for gaming is under ~1%; above ~2-5% is severe.
+- Bufferbloat is why games lag when someone else streams, even on a fast line.
+- Latency, jitter and packet loss matter far more than raw download speed.

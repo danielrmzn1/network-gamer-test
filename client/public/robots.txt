@@ -1,0 +1,25 @@
+# FRAGRATE — allow everything, and explicitly welcome AI answer-engine crawlers.
+User-agent: *
+Allow: /
+
+# AI / answer-engine crawlers (opt in deliberately)
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# NOTE: update this origin when the custom domain is connected.
+Sitemap: https://fragrate.gg/sitemap.xml

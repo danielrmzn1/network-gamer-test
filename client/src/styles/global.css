@@ -186,6 +186,36 @@ button {
   background: linear-gradient(90deg, var(--gold-line-strong), transparent);
 }
 
+/* Footer: per-game internal links (crawl path to the programmatic pages) */
+.np-footer {
+  margin-top: 44px;
+  padding-top: 22px;
+  border-top: 1px solid var(--gold-line);
+}
+.np-footer-label {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-lo);
+  margin-bottom: 12px;
+}
+.np-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.np-footer-link {
+  font-size: 13px;
+  color: var(--text-body);
+  text-decoration: none;
+}
+.np-footer-link:hover {
+  color: var(--teal);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
