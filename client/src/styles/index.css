@@ -1,0 +1,239 @@
+@import "tailwindcss";
+
+/* ── Design tokens → utilities ───────────────────────────────────────────── */
+@theme {
+  /* Surfaces */
+  --color-void: #070e16;
+  --color-deep: #0a141f;
+  --color-abyss: #0a1521;     /* was --bg-base */
+  --color-panel: #0f2030;
+  --color-panel-2: #102234;
+  --color-inset: #0e1d2b;
+
+  /* Brand — teal + gold */
+  --color-teal: #3fd6c9;
+  --color-teal-dim: #1f8f9e;
+  --color-teal-deep: #12273a;
+  --color-gold: #c9a85c;
+  --color-gold-light: #f0d28f;
+  --color-gold-bright: #f1d79a;
+  --color-gold-deep: #b78b3e;
+
+  /* Semantic state */
+  --color-good: #5fd39a;
+  --color-warn: #e0a64b;
+  --color-bad: #e0455c;
+
+  /* Foreground / ink (was --text-*) */
+  --color-ink-hi: #ece4d2;
+  --color-ink-mid: #cdd8e2;
+  --color-ink-body: #9db1c2;
+  --color-ink-base: #93a7b8;
+  --color-ink-lo: #5e7184;
+  --color-ink-faint: #7c8fa0;
+
+  /* Fonts */
+  --font-display: "Marcellus SC", "Trajan Pro", "Times New Roman", serif;
+  --font-ui: "Rajdhani", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* The original design never set a line-height except via explicit rules
+     (preserved as leading-* utilities); everything else inherited `normal`.
+     Neutralize the line-heights Tailwind bundles into these named sizes so
+     they don't grow the vertical rhythm. */
+  --text-xs--line-height: normal;
+  --text-base--line-height: normal;
+  --text-2xl--line-height: normal;
+
+  /* Shadows / glows */
+  --shadow-glow-teal: 0 0 18px rgb(63 214 201 / 0.5);
+  --shadow-glow-gold: 0 6px 22px rgb(201 168 92 / 0.35);
+
+  /* Animations */
+  --animate-pulse-hud: np-pulse 1.3s ease-in-out infinite;
+  --animate-infotip-in: np-infotip-in 0.14s ease-out;
+}
+
+/* ── Raw vars (not utilities; referenced via arbitrary values & kept CSS) ──── */
+:root {
+  --cut-6: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  --cut-8: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  --cut-10: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  --cut-12: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+  --cut-14: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  --cut-16: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+  --cut-20: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+  --hex: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+
+  --gold-line: rgb(201 168 92 / 0.2);
+  --gold-line-strong: rgb(201 168 92 / 0.4);
+  --teal-line: rgb(63 214 201 / 0.25);
+
+  --up-gold-a: #9a7a32;
+  --up-gold-b: #e6c46a;
+
+  --text-glow-teal: 0 0 24px rgb(63 214 201 / 0.45);
+}
+
+/* ── Base layer (replaces global.css base + ambient) ───────────────────────── */
+@layer base {
+  html,
+  body,
+  #root {
+    margin: 0;
+    min-height: 100%;
+    /* Revert Tailwind preflight's line-height:1.5 to the original inherited
+       `normal`; explicit leading-* utilities still override where needed. */
+    line-height: normal;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-ink-base);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* Ambient: radial wash + diamond grid */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background: radial-gradient(120% 90% at 50% -10%, #11283c 0%, #0a141f 55%, #070e16 100%);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgb(201 168 92 / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(201 168 92 / 0.04) 1px, transparent 1px);
+    background-size: 46px 46px;
+    background-position: center;
+  }
+
+  a {
+    color: var(--color-teal);
+  }
+  ::selection {
+    background: rgb(63 214 201 / 0.28);
+    color: var(--color-ink-hi);
+  }
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ── Kept decorative classes (carried over from global.css) ────────────────── */
+.np-frame {
+  clip-path: var(--cut-16);
+  background: linear-gradient(150deg, rgb(201 168 92 / 0.32), rgb(63 214 201 / 0.14));
+  padding: 1px;
+}
+.np-frame-in {
+  clip-path: var(--cut-16);
+  background: linear-gradient(150deg, #0f2030, #0a1521);
+  height: 100%;
+}
+.np-frame.hero {
+  clip-path: var(--cut-20);
+  background: linear-gradient(150deg, rgb(201 168 92 / 0.5), rgb(201 168 92 / 0.08) 45%, rgb(63 214 201 / 0.22));
+}
+.np-frame.hero .np-frame-in {
+  clip-path: var(--cut-20);
+  background: linear-gradient(150deg, #102234 0%, #0a1521 70%);
+}
+
+.np-cut {
+  clip-path: var(--cut-12);
+  box-shadow: inset 0 0 0 1px var(--gold-line);
+  background: linear-gradient(150deg, var(--color-inset), var(--color-abyss));
+}
+
+/* top edge glow line (gold → teal) — moved in from Task 2 Step 1 */
+.np-app::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 2;
+  background: linear-gradient(90deg, transparent, rgb(201 168 92 / 0.6) 30%, rgb(63 214 201 / 0.6) 70%, transparent);
+}
+
+/* bufferbloat grade box (color-mix glow) — moved in from Task 6 Step 1 */
+.np-bloat-grade {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  clip-path: var(--cut-10);
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--g, var(--color-ink-faint));
+  box-shadow:
+    inset 0 0 0 2px var(--g, var(--color-ink-faint)),
+    0 0 16px color-mix(in srgb, var(--g, transparent) 40%, transparent),
+    inset 0 0 12px color-mix(in srgb, var(--g, transparent) 18%, transparent);
+}
+
+.np-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 34px 2px 16px;
+}
+.np-section-title::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--color-teal);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px var(--color-teal);
+  flex: 0 0 auto;
+}
+.np-section-title .np-eyebrow {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  white-space: nowrap;
+}
+.np-section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-line-strong), transparent);
+}
+
+/* ── Keyframes (moved from components.css) ─────────────────────────────────── */
+@keyframes np-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgb(63 214 201 / 0.3); }
+  50% { box-shadow: 0 0 22px rgb(63 214 201 / 0.6); }
+}
+@keyframes np-infotip-in {
+  from { opacity: 0; transform: translateY(calc(-100% + 5px)); }
+  to { opacity: 1; transform: translateY(-100%); }
+}

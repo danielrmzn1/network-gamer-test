@@ -91,16 +91,16 @@ export function Sparkline({ data }: { data: number[] }) {
   }, [data])
 
   return (
-    <div className="np-spark">
-      <div className="np-spark-head">
-        <span className="np-spark-title">{t(lang, 'latencyOverTime')}</span>
-        <span className="np-spark-meta">
+    <div className="px-[26px] py-[22px]">
+      <div className="flex justify-between items-center mb-2.5">
+        <span className="font-semibold tracking-[0.2em] text-xs leading-[normal] uppercase text-gold">{t(lang, 'latencyOverTime')}</span>
+        <span className="text-xs leading-[normal] tracking-[0.05em] text-ink-lo">
           {data.length
             ? `${data[data.length - 1].toFixed(0)} ms ${lang === 'es' ? 'ahora' : 'now'} · ${data.length} ${lang === 'es' ? 'muestras' : 'samples'}`
             : t(lang, 'awaitingSamples')}
         </span>
       </div>
-      <canvas ref={ref} />
+      <canvas ref={ref} className="w-full h-[170px] block" />
     </div>
   )
 }
