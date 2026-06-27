@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { join, relative, sep } from 'node:path'
 
 const distDir = fileURLToPath(new URL('../dist/', import.meta.url))
-const origin = (process.env.VITE_SITE_URL ?? 'https://fragrate.gg').replace(/\/+$/, '')
+const origin = (process.env.VITE_SITE_URL ?? 'https://fragrate.daniel-ramirez.dev').replace(/\/+$/, '')
 const SKIP_DIRS = new Set(['assets', 'fonts'])
 
 function walk(dir) {
@@ -15,7 +15,7 @@ function walk(dir) {
   for (const ent of readdirSync(dir, { withFileTypes: true })) {
     if (ent.isDirectory()) {
       if (!SKIP_DIRS.has(ent.name)) found.push(...walk(join(dir, ent.name)))
-    } else if (ent.name.endsWith('.html')) {
+    } else if (ent.name.endsWith('.html') && ent.name !== '404.html') {
       found.push(join(dir, ent.name))
     }
   }

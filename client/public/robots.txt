@@ -21,5 +21,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-# NOTE: update this origin when the custom domain is connected.
-Sitemap: https://fragrate.gg/sitemap.xml
+Sitemap: https://fragrate.daniel-ramirez.dev/sitemap.xml
