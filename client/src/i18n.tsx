@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+import { createContext, useContext, type ReactNode } from 'react'
 import type { Genre } from '@shared/catalog.types'
 import type { VerdictState } from '@shared/grading'
 import type { PhaseName } from '@shared/protocol'
@@ -7,34 +7,40 @@ import type { RunMode } from './engine/mode'
 
 export type Lang = 'en' | 'es'
 
-// ── reactive language store (persisted) ──────────────────────────────────────
-function initial(): Lang {
+// ── locale (URL-driven) ──────────────────────────────────────────────────────
+// The active locale comes from the route: there is one prerendered HTML document
+// per locale ('/' = en, '/es/' = es), provided via <LangProvider>. Because the
+// locale is fixed by the URL, the server prerender and the client's first render
+// always agree, so hydration matches. localStorage is only a redirect hint for
+// first-time visitors (see preferredLang / rememberLang).
+const LS_KEY = 'fragrate-lang'
+
+const LangContext = createContext<Lang>('en')
+
+export function LangProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
+  return <LangContext.Provider value={lang}>{children}</LangContext.Provider>
+}
+
+export function useLang(): Lang {
+  return useContext(LangContext)
+}
+
+/** Persist the user's explicit language choice so auto-redirect respects it. */
+export function rememberLang(l: Lang): void {
+  try { localStorage.setItem(LS_KEY, l) } catch { /* ignore */ }
+}
+
+/** First-visit preference: stored choice, else browser locale, else null (stay). */
+export function preferredLang(): Lang | null {
   try {
-    const v = localStorage.getItem('fragrate-lang')
+    const v = localStorage.getItem(LS_KEY)
     if (v === 'es' || v === 'en') return v
   } catch { /* ignore */ }
-  // No saved choice — fall back to the browser/system locale.
   try {
     const langs = navigator.languages?.length ? navigator.languages : [navigator.language]
     if (langs.some((l) => l?.toLowerCase().startsWith('es'))) return 'es'
   } catch { /* ignore */ }
-  return 'en'
-}
-let current: Lang = initial()
-const listeners = new Set<() => void>()
-
-export function setLang(l: Lang): void {
-  if (l === current) return
-  current = l
-  try { localStorage.setItem('fragrate-lang', l) } catch { /* ignore */ }
-  for (const fn of listeners) fn()
-}
-export function useLang(): Lang {
-  return useSyncExternalStore(
-    (fn) => { listeners.add(fn); return () => listeners.delete(fn) },
-    () => current,
-    () => current,
-  )
+  return null
 }
 
 // ── static strings ───────────────────────────────────────────────────────────

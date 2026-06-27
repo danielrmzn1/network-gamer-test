@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useEngine, store } from './state/store'
 import { runTest, recompute } from './engine/orchestrator'
 import { detectMode } from './engine/mode'
@@ -15,11 +16,18 @@ import { GameCard } from './components/GameCard'
 import { RegionSelector } from './components/RegionSelector'
 import { PhaseStepper } from './components/PhaseStepper'
 import { toneLower, gaugeMax } from './lib/tone'
-import { useLang, setLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody } from './i18n'
+import { useLang, rememberLang, preferredLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody } from './i18n'
+import { Seo } from './seo/Seo'
+import { SITE_URL } from './seo/config'
+import { variantPath } from './seo/gameContent'
+
+const LANG_BTN =
+  'bg-transparent border-none text-ink-faint font-ui text-[13px] font-semibold tracking-[0.14em] px-4 py-[7px] [transition:all_0.15s_ease] aria-pressed:bg-gradient-to-b aria-pressed:from-gold-light aria-pressed:to-gold aria-pressed:text-abyss aria-pressed:font-bold aria-[pressed=false]:hover:text-ink-mid'
 
 export default function App() {
   const s = useEngine()
   const lang = useLang()
+  const navigate = useNavigate()
   const game = GAME_BY_ID[s.selectedGameId] ?? GAMES[0]
   const bands = GENRE_BANDS[game.genre]
 
@@ -39,19 +47,67 @@ export default function App() {
   }
   const onPickRegion = (r: Region): void => recompute({ region: r })
 
-  // Detect once whether the local measurement server is present (full mode) or
-  // we're a static Cloudflare Worker deploy (hosted mode).
+  // On mount (client only): a first-time visitor who prefers Spanish and lands
+  // on the default English route is redirected to /es. Googlebot (US IP, no
+  // Accept-Language) won't trigger this, so '/' stays indexed as English.
+  // A deep link from a per-game page ("Run the test" → /?game=<id>) preselects
+  // that game. Then detect local (full) vs hosted (browser-only) mode.
   useEffect(() => {
+    if (lang === 'en' && preferredLang() === 'es') navigate('/es', { replace: true })
+    const q = new URLSearchParams(window.location.search).get('game')
+    if (q && GAME_BY_ID[q]) {
+      store.set({ selectedGameId: q })
+      recompute({ gameId: q })
+    }
     void detectMode().then((m) => store.set({ mode: m }, true))
-  }, [])
+  }, [lang, navigate])
+
+  const path = lang === 'es' ? '/es' : '/'
+  const alternates = [
+    { hreflang: 'en', path: '/' },
+    { hreflang: 'es', path: '/es' },
+    { hreflang: 'x-default', path: '/' },
+  ]
+
+  const seo =
+    lang === 'es'
+      ? {
+          title: 'Test de Ping, Pérdida de Paquetes y Bufferbloat para Gamers — FRAGRATE',
+          description:
+            'Mide ping, jitter, pérdida de paquetes UDP y bufferbloat hacia regiones reales de juego y obtén un veredicto Jugable / Riesgoso / No apto por cada juego.',
+        }
+      : {
+          title: 'Gaming Ping, Packet Loss & Bufferbloat Test — FRAGRATE',
+          description:
+            'Free gamer network test: ping, jitter, UDP packet loss and bufferbloat to real game regions — with a per-game Playable / Risky / No-go verdict.',
+        }
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'FRAGRATE',
+    url: `${SITE_URL}${path}`,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: 'Web',
+    browserRequirements: 'Requires JavaScript',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    description: seo.description,
+  }
 
   return (
     <div className="np-app relative max-w-[1320px] mx-auto px-10 pt-[30px] pb-14 max-[760px]:px-4 max-[760px]:pt-[22px] max-[760px]:pb-12">
+      <Seo
+        title={seo.title}
+        description={seo.description}
+        path={path}
+        locale={lang}
+        alternates={alternates}
+        jsonLd={jsonLd}
+      />
       <header className="flex items-center justify-between gap-6 flex-wrap mb-1.5">
         <div className="flex items-baseline gap-4">
-          <h1 className="m-0 font-display font-normal text-[30px] tracking-[1px] text-ink-hi">
+          <div className="m-0 font-display font-normal text-[30px] tracking-[1px] text-ink-hi">
             FRAG<span className="text-teal [text-shadow:var(--text-glow-teal)]">RATE</span>
-          </h1>
+          </div>
           <span className="font-ui text-xs tracking-[0.25em] uppercase text-ink-lo">{t(lang, 'tagline')}</span>
           {s.mode === 'hosted' && (
             <span className="font-ui text-[10px] font-bold tracking-[0.18em] uppercase text-gold-light [clip-path:var(--cut-6)] shadow-[inset_0_0_0_1px_var(--gold-line-strong)] px-2.5 py-1">
@@ -66,17 +122,23 @@ export default function App() {
         >
           <button
             type="button"
-            className="bg-transparent border-none text-ink-faint font-ui text-[13px] font-semibold tracking-[0.14em] px-4 py-[7px] [transition:all_0.15s_ease] aria-pressed:bg-gradient-to-b aria-pressed:from-gold-light aria-pressed:to-gold aria-pressed:text-abyss aria-pressed:font-bold aria-[pressed=false]:hover:text-ink-mid"
+            className={LANG_BTN}
             aria-pressed={lang === 'en'}
-            onClick={() => setLang('en')}
+            onClick={() => {
+              rememberLang('en')
+              navigate('/')
+            }}
           >
             EN
           </button>
           <button
             type="button"
-            className="bg-transparent border-none text-ink-faint font-ui text-[13px] font-semibold tracking-[0.14em] px-4 py-[7px] [transition:all_0.15s_ease] aria-pressed:bg-gradient-to-b aria-pressed:from-gold-light aria-pressed:to-gold aria-pressed:text-abyss aria-pressed:font-bold aria-[pressed=false]:hover:text-ink-mid"
+            className={LANG_BTN}
             aria-pressed={lang === 'es'}
-            onClick={() => setLang('es')}
+            onClick={() => {
+              rememberLang('es')
+              navigate('/es')
+            }}
           >
             ES
           </button>
@@ -194,6 +256,23 @@ export default function App() {
       <p className="mt-[30px] mx-0.5 mb-0 pt-5 [border-top:1px_solid_var(--gold-line)] text-xs leading-[1.6] text-ink-lo max-w-[1100px] [&_b]:text-gold [&_b]:font-semibold">
         <b>{noteTitle[lang]}</b> {noteBody(lang, s.backendLabel || 'Cloudflare', s.mode)}
       </p>
+
+      <footer className="mt-11 pt-[22px] [border-top:1px_solid_var(--gold-line)]">
+        <span className="block mb-3 font-ui text-[11px] font-semibold tracking-[0.2em] uppercase text-ink-lo">
+          {lang === 'es' ? 'Guías por juego' : 'Per-game guides'}
+        </span>
+        <nav className="flex flex-wrap gap-x-4 gap-y-2">
+          {GAMES.map((g) => (
+            <Link
+              key={g.id}
+              to={variantPath(g.id, 'ping-test', lang)}
+              className="text-[13px] text-ink-body no-underline hover:text-teal"
+            >
+              {g.name} {lang === 'es' ? 'ping' : 'ping test'}
+            </Link>
+          ))}
+        </nav>
+      </footer>
     </div>
   )
 }

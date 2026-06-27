@@ -136,5 +136,7 @@ class EngineStore {
 export const store = new EngineStore('lol', 'LATAM-North')
 
 export function useEngine(): EngineState {
-  return useSyncExternalStore(store.subscribe, store.getSnapshot)
+  // getServerSnapshot (3rd arg) returns the same static idle state during the
+  // SSG prerender and the client's first render, so hydration matches.
+  return useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot)
 }
