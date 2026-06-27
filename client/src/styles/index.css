@@ -66,35 +66,6 @@
   --text-glow-teal: 0 0 24px rgb(63 214 201 / 0.45);
 }
 
-/* ── TEMP back-compat aliases (DELETE in Task 11) ──────────────────────────── */
-/* Lets the not-yet-converted components.css resolve original token names. */
-:root {
-  --bg-void: var(--color-void);
-  --bg-deep: var(--color-deep);
-  --bg-base: var(--color-abyss);
-  --bg-panel: var(--color-panel);
-  --bg-panel-2: var(--color-panel-2);
-  --bg-inset: var(--color-inset);
-  --teal: var(--color-teal);
-  --teal-dim: var(--color-teal-dim);
-  --teal-deep: var(--color-teal-deep);
-  --gold: var(--color-gold);
-  --gold-light: var(--color-gold-light);
-  --gold-bright: var(--color-gold-bright);
-  --gold-deep: var(--color-gold-deep);
-  --good: var(--color-good);
-  --warn: var(--color-warn);
-  --bad: var(--color-bad);
-  --text-hi: var(--color-ink-hi);
-  --text-mid: var(--color-ink-mid);
-  --text-body: var(--color-ink-body);
-  --text-base: var(--color-ink-base);
-  --text-lo: var(--color-ink-lo);
-  --text-faint: var(--color-ink-faint);
-  --glow-gold: var(--shadow-glow-gold);
-  --glow-teal: var(--shadow-glow-teal);
-}
-
 /* ── Base layer (replaces global.css base + ambient) ───────────────────────── */
 @layer base {
   html,
@@ -244,19 +215,6 @@
   flex: 1;
   height: 1px;
   background: linear-gradient(90deg, var(--gold-line-strong), transparent);
-}
-
-.np-label {
-  font-family: var(--font-ui);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-ink-lo);
-}
-.np-num {
-  font-family: var(--font-display);
-  color: var(--color-ink-hi);
 }
 
 /* ── Keyframes (moved from components.css) ─────────────────────────────────── */
