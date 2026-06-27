@@ -42,7 +42,7 @@ function Bar({ label, dir, value, peak, lang }: { label: string; dir: 'down' | '
           style={{ width: `${mbpsBarPct(value)}%` }}
         />
       </div>
-      <div className="text-right text-[10px] tracking-[0.1em] uppercase text-ink-lo">
+      <div className="text-right text-[10px] tracking-[0.1em] uppercase text-ink-lo min-h-[1lh]">
         {peak != null && peak > 0 ? `${t(lang, 'peak')} ${fmtMbps(peak)} Mbps` : ' '}
       </div>
     </div>
