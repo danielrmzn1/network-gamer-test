@@ -169,7 +169,7 @@ export function MobileDashboard(props: DashboardProps) {
         )}
 
         {/* tabs */}
-        <div className="flex gap-1.5 mt-2.5" role="tablist" aria-label={t(lang, 'tabOverview')}>
+        <div className="flex gap-1.5 mt-2.5" role="tablist" aria-label={t(lang, 'viewsLabel')}>
           {tabs.map((tb) => (
             <button key={tb.k} type="button" role="tab" aria-selected={tab === tb.k} className={tabBtn(tab === tb.k)} onClick={() => { setTab(tb.k); setExpandedId(() => null) }}>
               {tb.label}
