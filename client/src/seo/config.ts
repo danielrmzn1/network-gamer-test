@@ -1,8 +1,8 @@
 // Canonical site origin for absolute canonical / Open Graph / hreflang URLs.
-// Override at build time with VITE_SITE_URL once the custom domain is connected
-// (e.g. VITE_SITE_URL=https://fragrate.gg). The placeholder below MUST match the
-// origin used in public/robots.txt and public/sitemap.xml.
-export const SITE_URL = (import.meta.env.VITE_SITE_URL ?? 'https://fragrate.gg').replace(/\/+$/, '')
+// Defaults to the production domain; override at build time with VITE_SITE_URL
+// only if the domain changes. Keep in sync with public/robots.txt and the
+// gen-sitemap.mjs fallback.
+export const SITE_URL = (import.meta.env.VITE_SITE_URL ?? 'https://fragrate.net').replace(/\/+$/, '')
 
 /** Resolve a root-relative path to an absolute URL on the canonical origin. */
 export const abs = (path: string): string => `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`
