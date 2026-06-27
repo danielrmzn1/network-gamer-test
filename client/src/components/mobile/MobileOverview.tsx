@@ -1,12 +1,12 @@
 import type { EngineState } from '../../state/store'
-import type { Game } from '@shared/catalog.types'
+import type { Game, Genre } from '@shared/catalog.types'
 import type { Lang } from '../../i18n'
 import type { Tone } from '../../lib/tone'
 import { GENRE_BANDS } from '@shared/thresholds'
-import type { Genre } from '@shared/catalog.types'
 import { ArcGauge } from '../ArcGauge'
 import { Meters } from '../Meters'
 import { Sparkline } from '../Sparkline'
+import { SectionTitle } from './SectionTitle'
 import { gaugeMax } from '../../lib/tone'
 import { t, gaugeStateWord, genreLabel } from '../../i18n'
 
@@ -24,17 +24,6 @@ export interface MobileOverviewProps {
 }
 
 const PANEL = '[clip-path:var(--cut-12)] shadow-[inset_0_0_0_1px_rgb(201_168_92/0.2)] [background:linear-gradient(150deg,#0e1d2b,#0a1521)]'
-const EYEBROW = 'flex items-center gap-2.5 mx-0.5 mb-2.5'
-
-function SectionTitle({ children }: { children: string }) {
-  return (
-    <div className={EYEBROW}>
-      <span className="w-1.5 h-1.5 bg-teal rotate-45 shadow-[0_0_7px_var(--color-teal)] shrink-0" />
-      <span className="font-ui font-semibold tracking-[0.2em] text-[11px] text-gold uppercase whitespace-nowrap">{children}</span>
-      <span className="flex-1 h-px [background:linear-gradient(90deg,var(--gold-line-strong),transparent)]" />
-    </div>
-  )
-}
 
 export function MobileOverview({ s, lang, game, bands, ping, jitter, loss, pingTone, jitterTone, lossTone }: MobileOverviewProps) {
   return (

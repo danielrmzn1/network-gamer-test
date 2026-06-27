@@ -7,6 +7,7 @@ import { gameRegions } from '@shared/catalog'
 import { msColor } from '../RegionSelector'
 import { fmt } from '../../lib/format'
 import { t } from '../../i18n'
+import { SectionTitle } from './SectionTitle'
 
 export interface MobileRegionsProps {
   s: EngineState
@@ -22,7 +23,7 @@ export function MobileRegions({ s, lang, onPickRegion }: MobileRegionsProps) {
   const list = REGIONS.filter((info) => allow.size === 0 || allow.has(info.region))
     .map((info) => {
       const stats = s.regions[info.region]
-      const reachable = stats && stats.received > 0
+      const reachable = Boolean(stats && stats.received > 0)
       const median = reachable ? stats!.median : null
       return { info, median, reachable }
     })
@@ -32,11 +33,7 @@ export function MobileRegions({ s, lang, onPickRegion }: MobileRegionsProps) {
 
   return (
     <div>
-      <div className="flex items-center gap-2.5 mx-0.5 mb-2.5">
-        <span className="w-1.5 h-1.5 bg-teal rotate-45 shadow-[0_0_7px_var(--color-teal)] shrink-0" />
-        <span className="font-ui font-semibold tracking-[0.2em] text-[11px] text-gold uppercase whitespace-nowrap">{t(lang, 'regionMap')}</span>
-        <span className="flex-1 h-px [background:linear-gradient(90deg,var(--gold-line-strong),transparent)]" />
-      </div>
+      <SectionTitle>{t(lang, 'regionMap')}</SectionTitle>
 
       <div className="grid grid-cols-2 gap-2.5">
         {list.map(({ info, median, reachable }) => {

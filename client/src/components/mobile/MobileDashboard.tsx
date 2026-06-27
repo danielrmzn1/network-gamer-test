@@ -11,6 +11,7 @@ import {
   type Lang, t, heroIdle, heroVerdict, phaseLabel, noteTitle, noteBody,
 } from '../../i18n'
 import { variantPath } from '../../seo/gameContent'
+import { bloatColor } from '../Meters'
 import { MobileOverview } from './MobileOverview'
 import { MobileGames } from './MobileGames'
 import { MobileRegions } from './MobileRegions'
@@ -39,15 +40,6 @@ const TONE_COLOR: Record<Tone, string> = {
   warn: 'var(--color-warn)',
   bad: 'var(--color-bad)',
   neutral: 'var(--color-ink-lo)',
-}
-
-// Bufferbloat grade → color (mirrors Meters' bloatColor; real grade, not hardcoded red).
-function bloatColor(g: string | null): string {
-  if (g === 'A+' || g === 'A') return 'var(--color-good)'
-  if (g === 'B') return 'var(--color-teal)'
-  if (g === 'C') return 'var(--color-warn)'
-  if (g === 'D' || g === 'F') return 'var(--color-bad)'
-  return 'var(--color-ink-faint)'
 }
 
 // Small compact hex grade crest for the header (mobile-sized analogue of RankBadge).

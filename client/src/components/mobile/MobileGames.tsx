@@ -1,12 +1,12 @@
 import type { CSSProperties } from 'react'
 import type { EngineState } from '../../state/store'
-import type { Game } from '@shared/catalog.types'
+import type { Game, Genre } from '@shared/catalog.types'
 import type { Lang } from '../../i18n'
-import type { Genre } from '@shared/catalog.types'
 import type { VerdictState } from '@shared/grading'
 import { GAMES } from '@shared/catalog'
 import { gradeColor } from '../GameCard'
 import { t, verdictWord, reasonWord, genreLabel } from '../../i18n'
+import { SectionTitle } from './SectionTitle'
 
 export interface MobileGamesProps {
   s: EngineState
@@ -45,11 +45,7 @@ export function MobileGames({ s, lang, filter, setFilter, expandedId, setExpande
 
   return (
     <div>
-      <div className="flex items-center gap-2.5 mx-0.5 mb-2.5">
-        <span className="w-1.5 h-1.5 bg-teal rotate-45 shadow-[0_0_7px_var(--color-teal)] shrink-0" />
-        <span className="font-ui font-semibold tracking-[0.2em] text-[11px] text-gold uppercase whitespace-nowrap">{t(lang, 'canYouPlay')}</span>
-        <span className="flex-1 h-px [background:linear-gradient(90deg,var(--gold-line-strong),transparent)]" />
-      </div>
+      <SectionTitle>{t(lang, 'canYouPlay')}</SectionTitle>
 
       <div className="flex gap-2 mb-3">
         <button type="button" className={filterBtn(filter === 'all')} aria-pressed={filter === 'all'} onClick={() => setFilter('all')}>{t(lang, 'filterAll')}</button>
