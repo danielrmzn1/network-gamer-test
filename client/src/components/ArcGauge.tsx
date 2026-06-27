@@ -9,6 +9,7 @@ interface Props {
   tone: Tone
   decimals?: number
   stateLabel?: string
+  size?: number
 }
 
 const R = 52
@@ -25,14 +26,20 @@ const TONE: Record<Tone, string> = {
   neutral: 'var(--color-teal-dim)',
 }
 
-export function ArcGauge({ value, max, unit, name, tone, decimals = 0, stateLabel }: Props) {
+export function ArcGauge({ value, max, unit, name, tone, decimals = 0, stateLabel, size = 128 }: Props) {
   const frac = value == null || !Number.isFinite(value) ? 0 : Math.min(1, Math.max(0, value / max))
   const offset = ARC * (1 - frac)
   const display = value == null || !Number.isFinite(value) ? '—' : value.toFixed(decimals)
 
   return (
     <div className="flex flex-col items-center gap-3" style={{ '--g-color': TONE[tone] } as CSSProperties}>
-      <svg className="w-32 h-32 overflow-visible" viewBox="0 0 120 120" role="img" aria-label={`${name}: ${display} ${unit}`}>
+      <svg
+        className="overflow-visible"
+        style={{ width: size, height: size }}
+        viewBox="0 0 120 120"
+        role="img"
+        aria-label={`${name}: ${display} ${unit}`}
+      >
         <g transform={`rotate(135 ${CX} ${CY})`}>
           <circle
             className="stroke-white/[0.06]"
