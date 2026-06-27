@@ -21,4 +21,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://fragrate.daniel-ramirez.dev/sitemap.xml
+Sitemap: https://fragrate.net/sitemap.xml

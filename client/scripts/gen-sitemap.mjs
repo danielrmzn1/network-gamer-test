@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { join, relative, sep } from 'node:path'
 
 const distDir = fileURLToPath(new URL('../dist/', import.meta.url))
-const origin = (process.env.VITE_SITE_URL ?? 'https://fragrate.daniel-ramirez.dev').replace(/\/+$/, '')
+const origin = (process.env.VITE_SITE_URL ?? 'https://fragrate.net').replace(/\/+$/, '')
 const SKIP_DIRS = new Set(['assets', 'fonts'])
 
 function walk(dir) {
