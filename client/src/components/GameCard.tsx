@@ -5,7 +5,7 @@ import type { RunMode } from '../engine/mode'
 import { useLang, t, verdictWord, reasonWord, genreLabel } from '../i18n'
 
 /** Grade letter -> semantic color (matches the design's gradeColor). */
-function gradeColor(rank?: string): string {
+export function gradeColor(rank?: string): string {
   if (rank === 'C') return 'var(--color-good)'
   if (rank === 'D') return 'var(--color-warn)'
   if (rank === 'F') return 'var(--color-bad)'

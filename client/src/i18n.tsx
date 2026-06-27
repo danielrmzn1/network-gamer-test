@@ -97,6 +97,13 @@ const S = {
     es: 'No se pudo alcanzar los endpoints de región desde tu navegador. Ejecuta FRAGRATE localmente para el ping por región.',
   },
   gradedOn: { en: 'Verdict graded on', es: 'Veredicto evaluado en' },
+  tabOverview: { en: 'Overview', es: 'Resumen' },
+  tabGames: { en: 'Games', es: 'Juegos' },
+  tabRegions: { en: 'Regions', es: 'Regiones' },
+  viewsLabel: { en: 'Views', es: 'Vistas' },
+  filterAll: { en: 'All', es: 'Todos' },
+  filterPlayable: { en: 'Playable', es: 'Jugables' },
+  tapForDetail: { en: 'Tap a game for detail', es: 'Toca un juego para ver el detalle' },
 } satisfies Record<string, Entry>
 
 export type StrKey = keyof typeof S

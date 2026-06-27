@@ -4,7 +4,7 @@ import type { Region } from '@shared/catalog.types'
 import { REGIONS, REGION_BY_ID } from '@shared/regions'
 import { fmt } from '../lib/format'
 
-function msColor(median: number | null): string {
+export function msColor(median: number | null): string {
   if (median == null) return 'var(--color-ink-faint)'
   if (median <= 60) return 'var(--color-teal)'
   if (median <= 130) return 'var(--color-warn)'

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useLang, t } from '../i18n'
 
 /** Rolling latency sparkline on canvas: cyan stroke, fading area fill, glowing endpoint. */
-export function Sparkline({ data }: { data: number[] }) {
+export function Sparkline({ data, height = 170 }: { data: number[]; height?: number }) {
   const lang = useLang()
   const ref = useRef<HTMLCanvasElement>(null)
   // Keep the latest data in a ref so the ResizeObserver callback can redraw
@@ -100,7 +100,7 @@ export function Sparkline({ data }: { data: number[] }) {
             : t(lang, 'awaitingSamples')}
         </span>
       </div>
-      <canvas ref={ref} className="w-full h-[170px] block" />
+      <canvas ref={ref} className="w-full block" style={{ height }} />
     </div>
   )
 }

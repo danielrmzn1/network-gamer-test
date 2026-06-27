@@ -16,8 +16,9 @@ import { GameCard } from './components/GameCard'
 import { RegionSelector } from './components/RegionSelector'
 import { PhaseStepper } from './components/PhaseStepper'
 import { toneLower, gaugeMax } from './lib/tone'
-import { useLang, rememberLang, preferredLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody } from './i18n'
+import { useLang, rememberLang, preferredLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody, type Lang } from './i18n'
 import { Seo } from './seo/Seo'
+import { MobileDashboard, type DashboardProps } from './components/mobile/MobileDashboard'
 import { SITE_URL } from './seo/config'
 import { variantPath } from './seo/gameContent'
 
@@ -46,6 +47,10 @@ export default function App() {
     recompute({ gameId: id })
   }
   const onPickRegion = (r: Region): void => recompute({ region: r })
+  const onSelectLang = (l: Lang): void => {
+    rememberLang(l)
+    navigate(l === 'es' ? '/es' : '/')
+  }
 
   // On mount (client only): a first-time visitor who prefers Spanish and lands
   // on the default English route is redirected to /es. Googlebot (US IP, no
@@ -93,8 +98,13 @@ export default function App() {
     description: seo.description,
   }
 
+  const dashboardProps: DashboardProps = {
+    s, lang, game, bands, ping, jitter, loss, pingTone, jitterTone, lossTone,
+    onRun, onPickGame, onPickRegion, onSelectLang,
+  }
+
   return (
-    <div className="np-app relative max-w-[1320px] mx-auto px-10 pt-[30px] pb-14 max-[760px]:px-4 max-[760px]:pt-[22px] max-[760px]:pb-12">
+    <>
       <Seo
         title={seo.title}
         description={seo.description}
@@ -103,6 +113,7 @@ export default function App() {
         alternates={alternates}
         jsonLd={jsonLd}
       />
+      <div className="np-app relative max-w-[1320px] mx-auto px-10 pt-[30px] pb-14 max-[760px]:px-4 max-[760px]:pt-[22px] max-[760px]:pb-12 hidden md:block">
       <header className="flex items-center justify-between gap-6 flex-wrap mb-1.5">
         <div className="flex items-baseline gap-4">
           <div className="m-0 font-display font-normal text-[30px] tracking-[1px] text-ink-hi">
@@ -124,10 +135,7 @@ export default function App() {
             type="button"
             className={LANG_BTN}
             aria-pressed={lang === 'en'}
-            onClick={() => {
-              rememberLang('en')
-              navigate('/')
-            }}
+            onClick={() => onSelectLang('en')}
           >
             EN
           </button>
@@ -135,10 +143,7 @@ export default function App() {
             type="button"
             className={LANG_BTN}
             aria-pressed={lang === 'es'}
-            onClick={() => {
-              rememberLang('es')
-              navigate('/es')
-            }}
+            onClick={() => onSelectLang('es')}
           >
             ES
           </button>
@@ -274,5 +279,7 @@ export default function App() {
         </nav>
       </footer>
     </div>
+    <MobileDashboard {...dashboardProps} />
+    </>
   )
 }

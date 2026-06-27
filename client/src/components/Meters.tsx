@@ -5,7 +5,7 @@ import { fmtMbps, mbpsBarPct } from '../lib/format'
 import { useLang, t, type Lang } from '../i18n'
 import { InfoTip } from './InfoTip'
 
-function bloatColor(g: BloatGrade | null): string {
+export function bloatColor(g: BloatGrade | null): string {
   if (g === 'A+' || g === 'A') return 'var(--color-good)'
   if (g === 'B') return 'var(--color-teal)'
   if (g === 'C') return 'var(--color-warn)'
