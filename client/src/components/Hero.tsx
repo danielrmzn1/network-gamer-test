@@ -11,31 +11,31 @@ function VerdictText({ lang, state, game }: { lang: Lang; state: EngineState; ga
     const h = heroIdle(lang)
     return (
       <>
-        <h1 className="np-verdict-line">
+        <h1 className="m-0 mb-3.5 font-display font-normal text-[clamp(26px,3.4vw,40px)] leading-[1.12] text-ink-hi [text-wrap:balance]">
           {h.pre}
-          <span className="hl">{h.hl}</span>
+          <span className="text-teal [text-shadow:var(--text-glow-teal)]">{h.hl}</span>
           {h.post}
         </h1>
-        <p className="np-verdict-sub">{t(lang, 'idleSub')}</p>
+        <p className="m-0 mb-[22px] text-base leading-normal text-ink-body max-w-[680px]">{t(lang, 'idleSub')}</p>
       </>
     )
   }
   if (state.status === 'running') {
     return (
       <>
-        <h1 className="np-verdict-line">
+        <h1 className="m-0 mb-3.5 font-display font-normal text-[clamp(26px,3.4vw,40px)] leading-[1.12] text-ink-hi [text-wrap:balance]">
           {t(lang, 'heroRunning')}
-          <span className="hl">…</span>
+          <span className="text-teal [text-shadow:var(--text-glow-teal)]">…</span>
         </h1>
-        <p className="np-verdict-sub">{state.phase ? phaseLabel(lang, state.phase) : t(lang, 'measuring')}</p>
+        <p className="m-0 mb-[22px] text-base leading-normal text-ink-body max-w-[680px]">{state.phase ? phaseLabel(lang, state.phase) : t(lang, 'measuring')}</p>
       </>
     )
   }
   if (state.status === 'error') {
     return (
       <>
-        <h1 className="np-verdict-line">{t(lang, 'heroErrorLine')}</h1>
-        <p className="np-verdict-sub">{state.error ?? t(lang, 'heroErrorSub')}</p>
+        <h1 className="m-0 mb-3.5 font-display font-normal text-[clamp(26px,3.4vw,40px)] leading-[1.12] text-ink-hi [text-wrap:balance]">{t(lang, 'heroErrorLine')}</h1>
+        <p className="m-0 mb-[22px] text-base leading-normal text-ink-body max-w-[680px]">{state.error ?? t(lang, 'heroErrorSub')}</p>
       </>
     )
   }
@@ -59,12 +59,12 @@ function VerdictText({ lang, state, game }: { lang: Lang; state: EngineState; ga
 
   return (
     <>
-      <h1 className="np-verdict-line">
+      <h1 className="m-0 mb-3.5 font-display font-normal text-[clamp(26px,3.4vw,40px)] leading-[1.12] text-ink-hi [text-wrap:balance]">
         {hv.pre}
-        <span className="hl">{game.name}</span>
+        <span className="text-teal [text-shadow:var(--text-glow-teal)]">{game.name}</span>
         {hv.post}
       </h1>
-      <p className="np-verdict-sub">{metrics}</p>
+      <p className="m-0 mb-[22px] text-base leading-normal text-ink-body max-w-[680px]">{metrics}</p>
     </>
   )
 }
@@ -84,20 +84,26 @@ export function Hero({ state, game, onRun }: { state: EngineState; game: Game; o
   const eyebrowRegion = eyebrowRegionId ? REGION_BY_ID[eyebrowRegionId]?.label : null
 
   return (
-    <Frame hero className="np-hero-frame">
-      <div className="np-hero">
+    <Frame hero className="mt-[22px]">
+      <div className="flex items-center gap-10 px-9 py-8 max-[760px]:flex-col max-[760px]:text-center">
         <RankBadge rank={rank} />
-        <div className="np-hero-info">
-          <div className="np-hero-eyebrow">
+        <div className="flex-1 min-w-0">
+          <div className="font-ui text-xs tracking-[0.3em] uppercase text-teal mb-3.5">
             {t(lang, 'verdict')} · {game.name}
             {eyebrowRegion ? ` · ${eyebrowRegion}` : ''}
           </div>
           <VerdictText lang={lang} state={state} game={game} />
-          <div className="np-hero-actions">
-            <button type="button" className="np-cta" data-running={running} onClick={onRun} disabled={running}>
+          <div className="flex items-center gap-7 flex-wrap max-[760px]:justify-center">
+            <button
+              type="button"
+              className="font-ui font-bold text-[15px] tracking-[0.2em] uppercase text-abyss bg-gradient-to-b from-gold-light to-gold border-none px-[38px] py-3.5 [clip-path:var(--cut-12)] shadow-glow-gold [transition:filter_0.14s_ease,transform_0.12s_ease] hover:brightness-[1.08] active:translate-y-px data-[running=true]:bg-gradient-to-b data-[running=true]:from-[#2a6f78] data-[running=true]:to-teal-dim data-[running=true]:text-[#d7faf6] data-[running=true]:cursor-progress data-[running=true]:animate-pulse-hud"
+              data-running={running}
+              onClick={onRun}
+              disabled={running}
+            >
               {ctaLabel}
             </button>
-            <div className="np-hero-meta">
+            <div className="flex gap-[26px] flex-wrap text-[13px] max-[760px]:justify-center [&_span]:text-ink-lo [&_b]:text-ink-mid [&_b]:font-semibold">
               {state.backendLabel && (
                 <span>
                   {t(lang, 'throughputVia')} <b>{state.backendLabel}</b>

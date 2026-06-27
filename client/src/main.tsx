@@ -1,6 +1,6 @@
 import { ViteReactSSG } from 'vite-react-ssg'
 import { routes } from './routes'
-import './styles/global.css'
+import './styles/index.css'
 
 // vite-react-ssg entry. It prerenders `routes` to static HTML at build time
 // (so crawlers and AI bots get real content) and hydrates them on the client.

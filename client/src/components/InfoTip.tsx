@@ -51,11 +51,11 @@ export function InfoTip({ label, children }: { label: string; children: ReactNod
   const open = pos != null
 
   return (
-    <span className="np-infotip" onMouseEnter={show} onMouseLeave={hide}>
+    <span className="inline-flex leading-[0]" onMouseEnter={show} onMouseLeave={hide}>
       <button
         ref={btnRef}
         type="button"
-        className="np-infotip-btn"
+        className="inline-grid place-items-center w-[17px] h-[17px] p-0 m-0 border-0 rounded-full bg-transparent text-ink-lo cursor-pointer [transition:color_0.15s_ease,box-shadow_0.15s_ease] [-webkit-tap-highlight-color:transparent] hover:text-teal focus-visible:text-teal focus-visible:outline-none focus-visible:shadow-[0_0_0_2px_color-mix(in_srgb,var(--color-teal)_55%,transparent)]"
         aria-label={label}
         aria-describedby={open ? id : undefined}
         aria-expanded={open}
@@ -77,7 +77,7 @@ export function InfoTip({ label, children }: { label: string; children: ReactNod
             <span
               role="tooltip"
               id={id}
-              className="np-infotip-pop"
+              className="fixed z-[1000] -translate-y-full px-3.5 py-3 font-ui text-[12.5px] font-medium leading-normal tracking-normal normal-case text-ink-mid [background:linear-gradient(150deg,var(--color-panel-2),var(--color-inset))] [clip-path:var(--cut-8)] shadow-[inset_0_0_0_1px_var(--gold-line-strong),0_12px_34px_rgb(0_0_0/0.55)] pointer-events-none animate-infotip-in motion-reduce:animate-none"
               style={
                 {
                   top: pos.top,
