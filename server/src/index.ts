@@ -15,6 +15,13 @@ const server = createServer((req, res) => {
     res.end(JSON.stringify({ ok: true, service: 'fragrate', ts: Date.now() }))
     return
   }
+  // The local server sees only the loopback address, so it can't geolocate.
+  // Report unavailable; the client falls back to its timezone/locale heuristic.
+  if (path === '/api/geo') {
+    res.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' })
+    res.end(JSON.stringify({ available: false }))
+    return
+  }
   if (path === '/dl' && req.method === 'GET') return handleDownload(req, res)
   if (path === '/ul' && req.method === 'POST') return handleUpload(req, res)
 
