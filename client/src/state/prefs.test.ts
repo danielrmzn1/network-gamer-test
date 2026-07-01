@@ -29,6 +29,10 @@ describe('game persistence', () => {
   it('returns null when nothing is stored', () => {
     expect(preferredGame()).toBeNull()
   })
+  it('returns null for an inherited Object.prototype key (e.g. toString)', () => {
+    localStorage.setItem('fragrate-game', 'toString')
+    expect(preferredGame()).toBeNull()
+  })
 })
 
 describe('region persistence', () => {

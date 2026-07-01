@@ -24,10 +24,14 @@ export interface StartupSelection {
  *   region: stored-if-valid-for-game > geo-nearest > null (keep default)
  * A null field means "leave the store's existing value untouched".
  */
+// hasOwnProperty, not truthiness: GAME_BY_ID is an Object.fromEntries map, so a
+// bare GAME_BY_ID['toString'] returns an inherited prototype member. Guards both
+// a crafted ?game= deep-link and a tampered stored pref from injecting a non-game.
+const validGame = (id: string | null): string | null =>
+  id && Object.prototype.hasOwnProperty.call(GAME_BY_ID, id) ? id : null
+
 export function resolveStartup(input: StartupInput): StartupSelection {
-  const gameId =
-    (input.queryGame && GAME_BY_ID[input.queryGame] ? input.queryGame : null) ??
-    (input.storedGame && GAME_BY_ID[input.storedGame] ? input.storedGame : null)
+  const gameId = validGame(input.queryGame) ?? validGame(input.storedGame)
 
   const allowed = gameRegions(gameId ?? DEFAULT_GAME_ID)
 

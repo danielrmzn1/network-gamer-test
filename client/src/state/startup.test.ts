@@ -16,6 +16,12 @@ describe('resolveStartup — game precedence', () => {
   it('gameId is null when neither query nor stored is valid', () => {
     expect(resolveStartup({ queryGame: 'bogus', storedGame: 'also-bogus', storedRegion: null, coords: null }).gameId).toBeNull()
   })
+  it('rejects an inherited Object.prototype key as the query game', () => {
+    expect(resolveStartup({ queryGame: 'toString', storedGame: null, storedRegion: null, coords: null }).gameId).toBeNull()
+  })
+  it('rejects an inherited Object.prototype key as the stored game', () => {
+    expect(resolveStartup({ queryGame: null, storedGame: 'constructor', storedRegion: null, coords: null }).gameId).toBeNull()
+  })
 })
 
 describe('resolveStartup — region precedence', () => {

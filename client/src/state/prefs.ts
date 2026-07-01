@@ -16,7 +16,9 @@ export function rememberGame(id: string): void {
 export function preferredGame(): string | null {
   try {
     const v = localStorage.getItem(GAME_KEY)
-    if (v && GAME_BY_ID[v]) return v
+    // hasOwnProperty, not truthiness: GAME_BY_ID is an Object.fromEntries map, so
+    // a bare GAME_BY_ID['toString'] would return an inherited prototype member.
+    if (v && Object.prototype.hasOwnProperty.call(GAME_BY_ID, v)) return v
   } catch { /* ignore */ }
   return null
 }
