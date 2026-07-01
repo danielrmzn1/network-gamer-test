@@ -67,6 +67,29 @@ async function handleTurn(env: Env): Promise<Response> {
   return json({ iceServers }, 200, { 'Cache-Control': 'no-store' })
 }
 
+// GET /api/geo — the visitor's approximate location from Cloudflare's edge
+// (request.cf). No secret needed. request.cf may be absent (some contexts /
+// local wrangler); then we report { available:false } and the client falls back
+// to its timezone/locale heuristic. Note cf.latitude/longitude are STRINGS.
+interface CfGeo {
+  latitude?: string
+  longitude?: string
+  country?: string
+  continent?: string
+}
+
+function handleGeo(request: Request): Response {
+  const cf = (request as unknown as { cf?: CfGeo }).cf
+  const lat = cf?.latitude != null ? Number(cf.latitude) : NaN
+  const lon = cf?.longitude != null ? Number(cf.longitude) : NaN
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) {
+    return json({ available: false }, 200, { 'Cache-Control': 'no-store' })
+  }
+  return json({ lat, lon, country: cf?.country, continent: cf?.continent }, 200, {
+    'Cache-Control': 'no-store',
+  })
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
@@ -74,6 +97,11 @@ export default {
     if (url.pathname === '/api/turn') {
       if (request.method !== 'GET') return json({ error: 'Method Not Allowed' }, 405)
       return handleTurn(env)
+    }
+
+    if (url.pathname === '/api/geo') {
+      if (request.method !== 'GET') return json({ error: 'Method Not Allowed' }, 405)
+      return handleGeo(request)
     }
 
     // No local measurement server in hosted mode — 404 any other /api/* so the

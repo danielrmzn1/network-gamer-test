@@ -17,6 +17,9 @@ import { RegionSelector } from './components/RegionSelector'
 import { PhaseStepper } from './components/PhaseStepper'
 import { toneLower, gaugeMax } from './lib/tone'
 import { useLang, rememberLang, preferredLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody, type Lang } from './i18n'
+import { detectCoords, detectNearestRegion } from './engine/geo'
+import { rememberGame, preferredGame, rememberRegion, preferredRegion } from './state/prefs'
+import { resolveStartup } from './state/startup'
 import { Seo } from './seo/Seo'
 import { MobileDashboard, type DashboardProps } from './components/mobile/MobileDashboard'
 import { SITE_URL } from './seo/config'
@@ -43,10 +46,20 @@ export default function App() {
 
   const onRun = (): void => void runTest({ gameId: s.selectedGameId, region: s.selectedRegion })
   const onPickGame = (id: string): void => {
-    store.set({ selectedGameId: id })
+    rememberGame(id)
     recompute({ gameId: id })
+    // If the current region isn't valid for the new game, re-pick the nearest
+    // allowed region from the (memoized) detected coords — no refetch.
+    const allowed = gameRegions(id)
+    const cur = store.value.selectedRegion
+    if (!cur || !allowed.includes(cur)) {
+      void detectNearestRegion(allowed).then((r) => { if (r) recompute({ region: r }) })
+    }
   }
-  const onPickRegion = (r: Region): void => recompute({ region: r })
+  const onPickRegion = (r: Region): void => {
+    rememberRegion(r)
+    recompute({ region: r })
+  }
   const onSelectLang = (l: Lang): void => {
     rememberLang(l)
     navigate(l === 'es' ? '/es' : '/')
@@ -55,15 +68,28 @@ export default function App() {
   // On mount (client only): a first-time visitor who prefers Spanish and lands
   // on the default English route is redirected to /es. Googlebot (US IP, no
   // Accept-Language) won't trigger this, so '/' stays indexed as English.
-  // A deep link from a per-game page ("Run the test" → /?game=<id>) preselects
-  // that game. Then detect local (full) vs hosted (browser-only) mode.
+  //
+  // Then resolve the initial game + region (client-only, post-hydration so SSG
+  // hydration still matches): a deep link from a per-game page (/?game=<id>) or
+  // a remembered game wins for the game; a remembered explicit region (valid for
+  // that game) else the geographically nearest region wins for the region.
+  // Measured latency still refines the region after a test run. Finally detect
+  // local (full) vs hosted (browser-only) mode.
   useEffect(() => {
     if (lang === 'en' && preferredLang() === 'es') navigate('/es', { replace: true })
-    const q = new URLSearchParams(window.location.search).get('game')
-    if (q && GAME_BY_ID[q]) {
-      store.set({ selectedGameId: q })
-      recompute({ gameId: q })
-    }
+
+    const queryGame = new URLSearchParams(window.location.search).get('game')
+    void detectCoords().then((coords) => {
+      const { gameId, region } = resolveStartup({
+        queryGame,
+        storedGame: preferredGame(),
+        storedRegion: preferredRegion(),
+        coords,
+      })
+      if (gameId) rememberGame(gameId)
+      recompute({ gameId: gameId ?? undefined, region: region ?? undefined })
+    })
+
     void detectMode().then((m) => store.set({ mode: m }, true))
   }, [lang, navigate])
 
