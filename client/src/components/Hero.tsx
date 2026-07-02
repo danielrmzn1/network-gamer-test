@@ -1,6 +1,7 @@
 import type { Game } from '@shared/catalog.types'
 import { REGION_BY_ID } from '@shared/regions'
 import { RankBadge } from './RankBadge'
+import { ShareButton } from './ShareButton'
 import { Frame } from './Frame'
 import type { EngineState } from '../state/store'
 import { fmt, fmtMbps } from '../lib/format'
@@ -103,6 +104,7 @@ export function Hero({ state, game, onRun }: { state: EngineState; game: Game; o
             >
               {ctaLabel}
             </button>
+            {state.status === 'done' && state.report && <ShareButton report={state.report} game={game} />}
             <div className="flex gap-[26px] flex-wrap text-[13px] max-[760px]:justify-center [&_span]:text-ink-lo [&_b]:text-ink-mid [&_b]:font-semibold">
               {state.backendLabel && (
                 <span>
