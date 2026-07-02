@@ -49,13 +49,13 @@ function VerdictText({ lang, state, game }: { lang: Lang; state: EngineState; ga
   const dl = fmtMbps(report?.download?.meanMbps)
   const ul = fmtMbps(report?.upload?.meanMbps)
   const hv = heroVerdict(lang, v?.state ?? 'NO')
-  const where = lang === 'es' ? `a ${regionLabel}` : `to ${regionLabel}`
-  const tail = ''
+  const where = lang === 'es' ? `a ${regionLabel}` : lang === 'pt' ? `até ${regionLabel}` : `to ${regionLabel}`
   const mode = state.mode === 'unknown' ? undefined : state.mode
+  const stats = `${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps`
   const metrics =
-    lang === 'es'
-      ? `${weakPointText('es', v?.reason ?? null, mode)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, bufferbloat ${bloat}.${tail}`
-      : `${weakPointText('en', v?.reason ?? null, mode)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, ${bloat} bufferbloat.${tail}`
+    lang === 'en'
+      ? `${weakPointText('en', v?.reason ?? null, mode)}${stats}, ${bloat} bufferbloat.`
+      : `${weakPointText(lang, v?.reason ?? null, mode)}${stats}, bufferbloat ${bloat}.`
 
   return (
     <>

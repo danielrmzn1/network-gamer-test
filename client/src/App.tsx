@@ -16,7 +16,7 @@ import { GameCard } from './components/GameCard'
 import { RegionSelector } from './components/RegionSelector'
 import { PhaseStepper } from './components/PhaseStepper'
 import { toneLower, gaugeMax } from './lib/tone'
-import { useLang, rememberLang, preferredLang, t, genreLabel, gaugeStateWord, noteTitle, noteBody, type Lang } from './i18n'
+import { useLang, rememberLang, preferredLang, homePath, t, genreLabel, gaugeStateWord, noteTitle, noteBody, type Lang } from './i18n'
 import { detectCoords, detectNearestRegion } from './engine/geo'
 import { rememberGame, preferredGame, rememberRegion, preferredRegion } from './state/prefs'
 import { resolveStartup } from './state/startup'
@@ -62,12 +62,13 @@ export default function App() {
   }
   const onSelectLang = (l: Lang): void => {
     rememberLang(l)
-    navigate(l === 'es' ? '/es' : '/')
+    navigate(homePath(l))
   }
 
-  // On mount (client only): a first-time visitor who prefers Spanish and lands
-  // on the default English route is redirected to /es. Googlebot (US IP, no
-  // Accept-Language) won't trigger this, so '/' stays indexed as English.
+  // On mount (client only): a first-time visitor who prefers Spanish or
+  // Portuguese and lands on the default English route is redirected to /es
+  // or /pt. Googlebot (US IP, no Accept-Language) won't trigger this, so '/'
+  // stays indexed as English.
   //
   // Then resolve the initial game + region (client-only, post-hydration so SSG
   // hydration still matches): a deep link from a per-game page (/?game=<id>) or
@@ -76,7 +77,8 @@ export default function App() {
   // Measured latency still refines the region after a test run. Finally detect
   // local (full) vs hosted (browser-only) mode.
   useEffect(() => {
-    if (lang === 'en' && preferredLang() === 'es') navigate('/es', { replace: true })
+    const pref = preferredLang()
+    if (lang === 'en' && pref && pref !== 'en') navigate(homePath(pref), { replace: true })
 
     const queryGame = new URLSearchParams(window.location.search).get('game')
     void detectCoords().then((coords) => {
@@ -93,10 +95,11 @@ export default function App() {
     void detectMode().then((m) => store.set({ mode: m }, true))
   }, [lang, navigate])
 
-  const path = lang === 'es' ? '/es' : '/'
+  const path = homePath(lang)
   const alternates = [
     { hreflang: 'en', path: '/' },
     { hreflang: 'es', path: '/es' },
+    { hreflang: 'pt', path: '/pt' },
     { hreflang: 'x-default', path: '/' },
   ]
 
@@ -107,11 +110,17 @@ export default function App() {
           description:
             'Mide ping, jitter, pérdida de paquetes UDP y bufferbloat hacia regiones reales de juego y obtén un veredicto Jugable / Riesgoso / No apto por cada juego.',
         }
-      : {
-          title: 'Gaming Ping, Packet Loss & Bufferbloat Test — FRAGRATE',
-          description:
-            'Free gamer network test: ping, jitter, UDP packet loss and bufferbloat to real game regions — with a per-game Playable / Risky / No-go verdict.',
-        }
+      : lang === 'pt'
+        ? {
+            title: 'Teste de Ping, Perda de Pacotes e Bufferbloat para Gamers — FRAGRATE',
+            description:
+              'Meça ping, jitter, perda de pacotes UDP e bufferbloat até regiões reais de jogo e receba um veredito Jogável / Arriscado / Inviável para cada jogo.',
+          }
+        : {
+            title: 'Gaming Ping, Packet Loss & Bufferbloat Test — FRAGRATE',
+            description:
+              'Free gamer network test: ping, jitter, UDP packet loss and bufferbloat to real game regions — with a per-game Playable / Risky / No-go verdict.',
+          }
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
@@ -157,22 +166,17 @@ export default function App() {
           role="group"
           aria-label="Language"
         >
-          <button
-            type="button"
-            className={LANG_BTN}
-            aria-pressed={lang === 'en'}
-            onClick={() => onSelectLang('en')}
-          >
-            EN
-          </button>
-          <button
-            type="button"
-            className={LANG_BTN}
-            aria-pressed={lang === 'es'}
-            onClick={() => onSelectLang('es')}
-          >
-            ES
-          </button>
+          {(['en', 'es', 'pt'] as const).map((l) => (
+            <button
+              key={l}
+              type="button"
+              className={LANG_BTN}
+              aria-pressed={lang === l}
+              onClick={() => onSelectLang(l)}
+            >
+              {l.toUpperCase()}
+            </button>
+          ))}
         </div>
       </header>
 
@@ -290,7 +294,7 @@ export default function App() {
 
       <footer className="mt-11 pt-[22px] [border-top:1px_solid_var(--gold-line)]">
         <span className="block mb-3 font-ui text-[11px] font-semibold tracking-[0.2em] uppercase text-ink-lo">
-          {lang === 'es' ? 'Guías por juego' : 'Per-game guides'}
+          {lang === 'es' ? 'Guías por juego' : lang === 'pt' ? 'Guias por jogo' : 'Per-game guides'}
         </span>
         <nav className="flex flex-wrap gap-x-4 gap-y-2">
           {GAMES.map((g) => (
@@ -299,7 +303,7 @@ export default function App() {
               to={variantPath(g.id, 'ping-test', lang)}
               className="text-[13px] text-ink-body no-underline hover:text-teal"
             >
-              {g.name} {lang === 'es' ? 'ping' : 'ping test'}
+              {g.name} {lang === 'en' ? 'ping test' : 'ping'}
             </Link>
           ))}
         </nav>

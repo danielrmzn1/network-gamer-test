@@ -19,10 +19,10 @@ function baseSlug(id: string, v: Variant): string {
   }
 }
 
-/** Root-relative URL for a game × variant page in a given locale (es is prefixed). */
+/** Root-relative URL for a game × variant page in a given locale (non-en is prefixed). */
 export function variantPath(id: string, v: Variant, lang: Lang = 'en'): string {
   const s = baseSlug(id, v)
-  return lang === 'es' ? `/es${s}` : s
+  return lang === 'en' ? s : `/${lang}${s}`
 }
 
 export interface GameFaq {
@@ -81,9 +81,9 @@ export interface GamePageData {
 
 /**
  * Builds a per-game content page for one of three distinct variants
- * (ping-test / good-ping / packet-loss) in EN or ES. All prose is generated
- * from the genre thresholds the live tester grades against, so pages are
- * self-consistent and genuinely useful; each variant + locale has its own
+ * (ping-test / good-ping / packet-loss) in EN, ES or PT-BR. All prose is
+ * generated from the genre thresholds the live tester grades against, so pages
+ * are self-consistent and genuinely useful; each variant + locale has its own
  * title/H1/lead/FAQ. Returns null for an unknown game id.
  */
 export function buildGamePage(id: string, variant: Variant, lang: Lang = 'en'): GamePageData | null {
@@ -93,7 +93,7 @@ export function buildGamePage(id: string, variant: Variant, lang: Lang = 'en'): 
   const b = GENRE_BANDS[game.genre]
   const name = game.name
   const genre = genreLabel(lang, game.genre)
-  const tr = (en: string, es: string): string => (lang === 'es' ? es : en)
+  const tr = (en: string, es: string, pt: string): string => (lang === 'es' ? es : lang === 'pt' ? pt : en)
   const path = variantPath(id, variant, lang)
 
   const regions = gameRegions(id).map((r) => {
@@ -103,41 +103,63 @@ export function buildGamePage(id: string, variant: Variant, lang: Lang = 'en'): 
 
   // ── number-backed Q&As ──────────────────────────────────────────────────
   const faqGoodPing: GameFaq = {
-    q: tr(`What is a good ping for ${name}?`, `¿Cuál es un buen ping para ${name}?`),
+    q: tr(
+      `What is a good ping for ${name}?`,
+      `¿Cuál es un buen ping para ${name}?`,
+      `Qual é um bom ping para ${name}?`,
+    ),
     a: tr(
       `Aim for under ${b.pingMs.good} ms; under ${b.pingMs.great} ms is optimal for ${name}. Up to ${b.pingMs.ok} ms is the playable ceiling, and above about ${b.pingMs.bad} ms ${name} feels laggy.`,
       `Apunta a menos de ${b.pingMs.good} ms; bajo ${b.pingMs.great} ms es óptimo para ${name}. Hasta ${b.pingMs.ok} ms es el límite jugable, y por encima de ~${b.pingMs.bad} ms ${name} se siente lento.`,
+      `Mire em menos de ${b.pingMs.good} ms; abaixo de ${b.pingMs.great} ms é o ideal para ${name}. Até ${b.pingMs.ok} ms é o teto jogável, e acima de ~${b.pingMs.bad} ms ${name} fica travado.`,
     ),
   }
   const faqLoss: GameFaq = {
-    q: tr(`How much packet loss can ${name} tolerate?`, `¿Cuánta pérdida de paquetes tolera ${name}?`),
+    q: tr(
+      `How much packet loss can ${name} tolerate?`,
+      `¿Cuánta pérdida de paquetes tolera ${name}?`,
+      `Quanta perda de pacotes ${name} tolera?`,
+    ),
     a: tr(
       `Keep packet loss under ${b.lossPct.good}%. Between ${b.lossPct.good}% and ${b.lossPct.ok}% is borderline; above ${b.lossPct.bad}% ${name} is effectively unplayable.`,
       `Mantén la pérdida bajo ${b.lossPct.good}%. Entre ${b.lossPct.good}% y ${b.lossPct.ok}% es dudoso; por encima de ${b.lossPct.bad}% ${name} es prácticamente injugable.`,
+      `Mantenha a perda abaixo de ${b.lossPct.good}%. Entre ${b.lossPct.good}% e ${b.lossPct.ok}% é limítrofe; acima de ${b.lossPct.bad}% ${name} fica praticamente injogável.`,
     ),
   }
   const faqJitter: GameFaq = {
-    q: tr(`Does jitter matter for ${name}?`, `¿Importa el jitter en ${name}?`),
+    q: tr(
+      `Does jitter matter for ${name}?`,
+      `¿Importa el jitter en ${name}?`,
+      `O jitter importa em ${name}?`,
+    ),
     a: tr(
       `Yes — keep jitter under ${b.jitterMs.good} ms for ${name} (${genre}). Above ${b.jitterMs.bad} ms you get inconsistent hit registration and rubber-banding even when average ping looks fine.`,
       `Sí — mantén el jitter bajo ${b.jitterMs.good} ms para ${name} (${genre}). Por encima de ${b.jitterMs.bad} ms tendrás registro de impactos inconsistente y rubber-banding aunque el ping medio se vea bien.`,
+      `Sim — mantenha o jitter abaixo de ${b.jitterMs.good} ms para ${name} (${genre}). Acima de ${b.jitterMs.bad} ms o registro de acertos fica inconsistente e há rubber-banding mesmo com o ping médio parecendo bom.`,
     ),
   }
   const faqSpeed: GameFaq = {
-    q: tr(`How much internet speed does ${name} need?`, `¿Cuánta velocidad de internet necesita ${name}?`),
+    q: tr(
+      `How much internet speed does ${name} need?`,
+      `¿Cuánta velocidad de internet necesita ${name}?`,
+      `Quanta velocidade de internet ${name} precisa?`,
+    ),
     a: tr(
       `Surprisingly little — about ${b.downloadMbps.ok}–${b.downloadMbps.good} Mbps down and ${b.uploadMbps.ok}–${b.uploadMbps.good} Mbps up is plenty. Latency, jitter and packet loss decide playability far more than raw speed.`,
       `Sorprendentemente poca — unos ${b.downloadMbps.ok}–${b.downloadMbps.good} Mbps de bajada y ${b.uploadMbps.ok}–${b.uploadMbps.good} Mbps de subida bastan. La latencia, el jitter y la pérdida deciden la jugabilidad mucho más que la velocidad bruta.`,
+      `Surpreendentemente pouca — cerca de ${b.downloadMbps.ok}–${b.downloadMbps.good} Mbps de download e ${b.uploadMbps.ok}–${b.uploadMbps.good} Mbps de upload já bastam. Latência, jitter e perda de pacotes decidem a jogabilidade muito mais que a velocidade bruta.`,
     ),
   }
   const faqBufferbloat: GameFaq = {
     q: tr(
       `Why does ${name} lag when someone else is streaming?`,
       `¿Por qué ${name} va lento cuando alguien más ve streaming?`,
+      `Por que ${name} laga quando alguém está assistindo streaming?`,
     ),
     a: tr(
       `That's bufferbloat — latency that piles up when your connection is saturated. A fast line can still spike to hundreds of ms under load, so ${name} stutters mid-fight. FRAGRATE measures latency-under-load to catch it.`,
       `Eso es bufferbloat — latencia que se acumula cuando tu conexión está saturada. Una línea rápida puede dispararse a cientos de ms bajo carga, así que ${name} se entrecorta en plena acción. FRAGRATE mide la latencia bajo carga para detectarlo.`,
+      `Isso é bufferbloat — latência que se acumula quando sua conexão está saturada. Mesmo uma linha rápida pode disparar para centenas de ms sob carga, então ${name} engasga no meio da luta. O FRAGRATE mede a latência sob carga para detectar isso.`,
     ),
   }
 
@@ -155,30 +177,40 @@ export function buildGamePage(id: string, variant: Variant, lang: Lang = 'en'): 
     title = tr(
       `${name} Ping Test — Latency, Jitter & Packet Loss by Region | FRAGRATE`,
       `Test de Ping de ${name} — Latencia, Jitter y Pérdida por Región | FRAGRATE`,
+      `Teste de Ping de ${name} — Latência, Jitter e Perda por Região | FRAGRATE`,
     )
     description = tr(
       `Test your ${name} ping, jitter, packet loss and bufferbloat to real game regions. A good ${name} ping is under ${b.pingMs.good} ms — see the full per-region playability breakdown.`,
       `Mide tu ping, jitter, pérdida de paquetes y bufferbloat de ${name} hacia regiones reales. Un buen ping para ${name} es menos de ${b.pingMs.good} ms — mira el desglose de jugabilidad por región.`,
+      `Meça seu ping, jitter, perda de pacotes e bufferbloat de ${name} até regiões reais. Um bom ping para ${name} é menos de ${b.pingMs.good} ms — veja o detalhamento de jogabilidade por região.`,
     )
-    h1 = tr(`${name} Ping Test`, `Test de Ping de ${name}`)
+    h1 = tr(`${name} Ping Test`, `Test de Ping de ${name}`, `Teste de Ping de ${name}`)
     lead = tr(
       `A good ping for ${name} (${genre}) is under ${b.pingMs.good} ms — ideally below ${b.pingMs.great} ms. Around ${b.pingMs.ok} ms is the playable ceiling, and past roughly ${b.pingMs.bad} ms it's effectively unplayable. FRAGRATE measures your real ping, jitter, packet loss and bufferbloat to the regions ${name} runs in and returns a per-game Playable / Risky / No-go verdict.`,
       `Un buen ping para ${name} (${genre}) es menos de ${b.pingMs.good} ms — idealmente bajo ${b.pingMs.great} ms. Cerca de ${b.pingMs.ok} ms es el límite jugable, y más allá de ~${b.pingMs.bad} ms es prácticamente injugable. FRAGRATE mide tu ping, jitter, pérdida y bufferbloat reales hacia las regiones donde corre ${name} y da un veredicto Jugable / Riesgoso / No apto.`,
+      `Um bom ping para ${name} (${genre}) é menos de ${b.pingMs.good} ms — idealmente abaixo de ${b.pingMs.great} ms. Perto de ${b.pingMs.ok} ms é o teto jogável, e além de ~${b.pingMs.bad} ms fica praticamente injogável. O FRAGRATE mede seu ping, jitter, perda e bufferbloat reais até as regiões onde ${name} roda e dá um veredito Jogável / Arriscado / Inviável.`,
     )
     faqs = [faqGoodPing, faqLoss, faqJitter, faqSpeed]
   } else if (variant === 'good-ping') {
     title = tr(
       `What Is a Good Ping for ${name}? (${b.pingMs.good} ms) | FRAGRATE`,
       `¿Cuál es un buen ping para ${name}? (${b.pingMs.good} ms) | FRAGRATE`,
+      `Qual é um bom ping para ${name}? (${b.pingMs.good} ms) | FRAGRATE`,
     )
     description = tr(
       `A good ping for ${name} is under ${b.pingMs.good} ms (optimal under ${b.pingMs.great} ms). See the exact ping, jitter and packet-loss thresholds for ${name} and test yours free.`,
       `Un buen ping para ${name} es menos de ${b.pingMs.good} ms (óptimo bajo ${b.pingMs.great} ms). Mira los umbrales exactos de ping, jitter y pérdida de ${name} y prueba el tuyo gratis.`,
+      `Um bom ping para ${name} é menos de ${b.pingMs.good} ms (ideal abaixo de ${b.pingMs.great} ms). Veja os limites exatos de ping, jitter e perda de ${name} e teste o seu de graça.`,
     )
-    h1 = tr(`What is a good ping for ${name}?`, `¿Cuál es un buen ping para ${name}?`)
+    h1 = tr(
+      `What is a good ping for ${name}?`,
+      `¿Cuál es un buen ping para ${name}?`,
+      `Qual é um bom ping para ${name}?`,
+    )
     lead = tr(
       `A good ping for ${name} (${genre}) is under ${b.pingMs.good} ms, and under ${b.pingMs.great} ms is optimal. ${b.pingMs.ok} ms is the highest still-playable ping; beyond about ${b.pingMs.bad} ms ${name} becomes frustrating. The table below is the exact ping, jitter and packet-loss bands ${name} is graded against.`,
       `Un buen ping para ${name} (${genre}) es menos de ${b.pingMs.good} ms, y bajo ${b.pingMs.great} ms es óptimo. ${b.pingMs.ok} ms es el ping jugable más alto; más allá de ~${b.pingMs.bad} ms ${name} se vuelve frustrante. La tabla muestra las bandas exactas de ping, jitter y pérdida con las que se evalúa ${name}.`,
+      `Um bom ping para ${name} (${genre}) é menos de ${b.pingMs.good} ms, e abaixo de ${b.pingMs.great} ms é o ideal. ${b.pingMs.ok} ms é o ping jogável mais alto; além de ~${b.pingMs.bad} ms ${name} vira frustração. A tabela abaixo traz as faixas exatas de ping, jitter e perda usadas para avaliar ${name}.`,
     )
     faqs = [faqGoodPing, faqJitter, faqLoss, faqBufferbloat]
     showRegions = false
@@ -186,44 +218,71 @@ export function buildGamePage(id: string, variant: Variant, lang: Lang = 'en'): 
     title = tr(
       `${name} Packet Loss Test & Fix — Stop Lag Spikes | FRAGRATE`,
       `Test de Pérdida de Paquetes de ${name} y Solución | FRAGRATE`,
+      `Teste de Perda de Pacotes de ${name} e Solução | FRAGRATE`,
     )
     description = tr(
       `Test ${name} packet loss and bufferbloat in your browser — no download. ${name} tolerates under ${b.lossPct.good}% loss; above ${b.lossPct.bad}% is unplayable. Plus a step-by-step fix checklist.`,
       `Mide la pérdida de paquetes y el bufferbloat de ${name} en tu navegador — sin descargas. ${name} tolera menos de ${b.lossPct.good}% de pérdida; más de ${b.lossPct.bad}% es injugable. Incluye guía para solucionarlo.`,
+      `Meça a perda de pacotes e o bufferbloat de ${name} no seu navegador — sem downloads. ${name} tolera menos de ${b.lossPct.good}% de perda; mais de ${b.lossPct.bad}% é injogável. Inclui um passo a passo para corrigir.`,
     )
-    h1 = tr(`${name} Packet Loss Test`, `Test de Pérdida de Paquetes de ${name}`)
+    h1 = tr(
+      `${name} Packet Loss Test`,
+      `Test de Pérdida de Paquetes de ${name}`,
+      `Teste de Perda de Pacotes de ${name}`,
+    )
     lead = tr(
       `Packet loss is the top cause of ${name} lag spikes, missed hit-registration and rubber-banding. ${name} stays smooth under ${b.lossPct.good}% loss; ${b.lossPct.ok}% is borderline and above ${b.lossPct.bad}% it's effectively unplayable. Test your real UDP loss and bufferbloat below, then work through the fixes.`,
       `La pérdida de paquetes es la principal causa de tirones, fallos de registro y rubber-banding en ${name}. ${name} va fluido con menos de ${b.lossPct.good}% de pérdida; ${b.lossPct.ok}% es el límite y más de ${b.lossPct.bad}% es prácticamente injugable. Mide tu pérdida UDP y bufferbloat reales y sigue los pasos para arreglarlo.`,
+      `A perda de pacotes é a principal causa de lag spikes, tiros não registrados e rubber-banding em ${name}. ${name} roda liso com menos de ${b.lossPct.good}% de perda; ${b.lossPct.ok}% é o limite e acima de ${b.lossPct.bad}% fica praticamente injogável. Meça sua perda UDP e bufferbloat reais abaixo e siga os passos para corrigir.`,
     )
     faqs = [faqLoss, faqBufferbloat, faqJitter, faqGoodPing]
     fixSteps = [
       {
-        title: tr('Use a wired Ethernet connection', 'Usa una conexión por cable (Ethernet)'),
+        title: tr(
+          'Use a wired Ethernet connection',
+          'Usa una conexión por cable (Ethernet)',
+          'Use uma conexão por cabo (Ethernet)',
+        ),
         body: tr(
           `Wi-Fi is the most common source of packet loss and jitter. A cable to the router removes interference and is the single biggest fix for most ${name} players.`,
           `El Wi-Fi es la causa más común de pérdida de paquetes y jitter. Un cable al router elimina interferencias y es la mejor solución para la mayoría de jugadores de ${name}.`,
+          `O Wi-Fi é a causa mais comum de perda de pacotes e jitter. Um cabo até o roteador elimina interferências e é a maior correção isolada para a maioria dos jogadores de ${name}.`,
         ),
       },
       {
-        title: tr('Enable SQM / QoS on your router', 'Activa SQM / QoS en tu router'),
+        title: tr(
+          'Enable SQM / QoS on your router',
+          'Activa SQM / QoS en tu router',
+          'Ative SQM / QoS no seu roteador',
+        ),
         body: tr(
           'Smart Queue Management (fq_codel / CAKE) crushes bufferbloat — the lag that appears when the line is busy. Many routers expose this as "QoS" or "anti-bufferbloat".',
           'Smart Queue Management (fq_codel / CAKE) elimina el bufferbloat — la latencia que aparece con la línea ocupada. Muchos routers lo exponen como "QoS" o "anti-bufferbloat".',
+          'Smart Queue Management (fq_codel / CAKE) elimina o bufferbloat — a latência que aparece com a linha ocupada. Muitos roteadores expõem isso como "QoS" ou "anti-bufferbloat".',
         ),
       },
       {
-        title: tr('Pick the nearest server region', 'Elige la región de servidor más cercana'),
+        title: tr(
+          'Pick the nearest server region',
+          'Elige la región de servidor más cercana',
+          'Escolha a região de servidor mais próxima',
+        ),
         body: tr(
           `Switch ${name} to the closest region. A nearer datacenter means lower ping and fewer drops; see the region list on the ${name} ping test.`,
           `Cambia ${name} a la región más cercana. Un datacenter más próximo significa menos ping y menos caídas; mira la lista de regiones en el test de ping de ${name}.`,
+          `Mude ${name} para a região mais próxima. Um datacenter mais perto significa menos ping e menos quedas; veja a lista de regiões no teste de ping de ${name}.`,
         ),
       },
       {
-        title: tr('Restart the gateway and rule out the line', 'Reinicia el router y descarta la línea'),
+        title: tr(
+          'Restart the gateway and rule out the line',
+          'Reinicia el router y descarta la línea',
+          'Reinicie o roteador e descarte a linha',
+        ),
         body: tr(
           'Power-cycle the modem/router. If loss persists on Ethernet across servers, the problem is upstream — contact your ISP with the measured loss figures.',
           'Reinicia el módem/router. Si la pérdida persiste por cable en varios servidores, el problema es de tu proveedor — contáctalo con las cifras de pérdida medidas.',
+          'Desligue e ligue o modem/roteador. Se a perda persistir no cabo em vários servidores, o problema está na operadora — entre em contato com sua provedora levando os números de perda medidos.',
         ),
       },
     ]
@@ -232,11 +291,11 @@ export function buildGamePage(id: string, variant: Variant, lang: Lang = 'en'): 
   const relatedLabel = (v: Variant): string => {
     switch (v) {
       case 'ping-test':
-        return tr(`${name} ping test`, `Test de ping de ${name}`)
+        return tr(`${name} ping test`, `Test de ping de ${name}`, `Teste de ping de ${name}`)
       case 'good-ping':
-        return tr(`Good ping for ${name}`, `Buen ping para ${name}`)
+        return tr(`Good ping for ${name}`, `Buen ping para ${name}`, `Bom ping para ${name}`)
       case 'packet-loss':
-        return tr(`${name} packet loss test`, `Test de pérdida de ${name}`)
+        return tr(`${name} packet loss test`, `Test de pérdida de ${name}`, `Teste de perda de ${name}`)
     }
   }
   const related: RelatedLink[] = VARIANTS.filter((v) => v !== variant).map((v) => ({
@@ -248,30 +307,45 @@ export function buildGamePage(id: string, variant: Variant, lang: Lang = 'en'): 
     thresholdsHeading: tr(
       `Good ping, jitter & packet loss for ${name}`,
       `Buen ping, jitter y pérdida de paquetes para ${name}`,
+      `Bom ping, jitter e perda de pacotes para ${name}`,
     ),
-    fixHeading: tr(`How to fix ${name} packet loss`, `Cómo arreglar la pérdida de paquetes en ${name}`),
-    regionsHeading: tr(`${name} regions FRAGRATE checks`, `Regiones de ${name} que mide FRAGRATE`),
-    measureHeading: tr('How FRAGRATE measures this', 'Cómo mide FRAGRATE'),
+    fixHeading: tr(
+      `How to fix ${name} packet loss`,
+      `Cómo arreglar la pérdida de paquetes en ${name}`,
+      `Como corrigir a perda de pacotes em ${name}`,
+    ),
+    regionsHeading: tr(
+      `${name} regions FRAGRATE checks`,
+      `Regiones de ${name} que mide FRAGRATE`,
+      `Regiões de ${name} que o FRAGRATE mede`,
+    ),
+    measureHeading: tr('How FRAGRATE measures this', 'Cómo mide FRAGRATE', 'Como o FRAGRATE mede isso'),
     measureBody: tr(
       `FRAGRATE measures ping and jitter as a TCP-handshake to a public endpoint in each game region, packet loss via UDP/WebRTC, and bufferbloat as the latency added while your line is saturated. Run it locally for true per-region game-server ping, or use the hosted browser test for ping, loss and bufferbloat.`,
       `FRAGRATE mide el ping y el jitter como un handshake TCP a un endpoint público en cada región del juego, la pérdida de paquetes por UDP/WebRTC, y el bufferbloat como la latencia añadida mientras tu línea está saturada. Ejecútalo localmente para el ping real por región, o usa el test en el navegador para ping, pérdida y bufferbloat.`,
+      `O FRAGRATE mede o ping e o jitter como um handshake TCP até um endpoint público em cada região do jogo, a perda de pacotes por UDP/WebRTC, e o bufferbloat como a latência adicionada enquanto sua linha está saturada. Execute-o localmente para o ping real por região, ou use o teste no navegador para ping, perda e bufferbloat.`,
     ),
-    faqHeading: tr('FAQ', 'Preguntas frecuentes'),
-    relatedHeading: tr(`More for ${name}`, `Más sobre ${name}`),
-    navRun: tr('Run the test →', 'Ejecutar la prueba →'),
-    cta: tr(`Run the live ${name} test →`, `Ejecuta la prueba de ${name} en vivo →`),
+    faqHeading: tr('FAQ', 'Preguntas frecuentes', 'Perguntas frequentes'),
+    relatedHeading: tr(`More for ${name}`, `Más sobre ${name}`, `Mais sobre ${name}`),
+    navRun: tr('Run the test →', 'Ejecutar la prueba →', 'Executar o teste →'),
+    cta: tr(
+      `Run the live ${name} test →`,
+      `Ejecuta la prueba de ${name} en vivo →`,
+      `Execute o teste de ${name} ao vivo →`,
+    ),
     table: {
-      metric: tr('Metric', 'Métrica'),
-      optimal: tr('Optimal', 'Óptimo'),
-      good: tr('Good', 'Bueno'),
-      playableMax: tr('Playable max', 'Máx. jugable'),
-      nogo: tr('No-go', 'No apto'),
+      metric: tr('Metric', 'Métrica', 'Métrica'),
+      optimal: tr('Optimal', 'Óptimo', 'Ideal'),
+      good: tr('Good', 'Bueno', 'Bom'),
+      playableMax: tr('Playable max', 'Máx. jugable', 'Máx. jogável'),
+      nogo: tr('No-go', 'No apto', 'Inviável'),
     },
   }
 
   const alternates: Alternate[] = [
     { hreflang: 'en', path: variantPath(id, variant, 'en') },
     { hreflang: 'es', path: variantPath(id, variant, 'es') },
+    { hreflang: 'pt', path: variantPath(id, variant, 'pt') },
     { hreflang: 'x-default', path: variantPath(id, variant, 'en') },
   ]
 
@@ -297,7 +371,11 @@ export function buildGamePage(id: string, variant: Variant, lang: Lang = 'en'): 
     jsonLd.push({
       '@context': 'https://schema.org',
       '@type': 'HowTo',
-      name: tr(`How to fix packet loss in ${name}`, `Cómo arreglar la pérdida de paquetes en ${name}`),
+      name: tr(
+        `How to fix packet loss in ${name}`,
+        `Cómo arreglar la pérdida de paquetes en ${name}`,
+        `Como corrigir a perda de pacotes em ${name}`,
+      ),
       step: fixSteps.map((st) => ({ '@type': 'HowToStep', name: st.title, text: st.body })),
     })
   }

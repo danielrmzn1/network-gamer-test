@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { Seo } from '../seo/Seo'
 import { buildGamePage, type Variant } from '../seo/gameContent'
-import type { Lang } from '../i18n'
+import { homePath, type Lang } from '../i18n'
 
 const H2 = 'font-ui font-semibold text-[20px] tracking-[0.01em] text-ink-mid mt-[38px] mb-3.5'
 const P = 'leading-[1.65] text-ink-body'
@@ -25,7 +25,7 @@ export function GamePage({ gameId, variant, lang }: { gameId: string; variant: V
   }
   const b = d.bands
   const L = d.labels
-  const testHref = `${lang === 'es' ? '/es' : '/'}?game=${d.id}`
+  const testHref = `${homePath(lang)}?game=${d.id}`
 
   return (
     <main className="max-w-[760px] mx-auto px-5 pt-6 pb-[72px]">
@@ -40,7 +40,7 @@ export function GamePage({ gameId, variant, lang }: { gameId: string; variant: V
       />
 
       <nav className="flex items-center justify-between gap-4 pt-1.5 pb-[22px] mb-[30px] [border-bottom:1px_solid_var(--gold-line)]">
-        <Link to={lang === 'es' ? '/es' : '/'} className="font-display text-[22px] tracking-[1px] text-ink-hi no-underline">
+        <Link to={homePath(lang)} className="font-display text-[22px] tracking-[1px] text-ink-hi no-underline">
           FRAG<span className="text-teal [text-shadow:var(--text-glow-teal)]">RATE</span>
         </Link>
         <Link
@@ -90,7 +90,7 @@ export function GamePage({ gameId, variant, lang }: { gameId: string; variant: V
                     <td>&gt; {b.jitterMs.bad} ms</td>
                   </tr>
                   <tr>
-                    <td>{lang === 'es' ? 'Pérdida' : 'Packet loss'}</td>
+                    <td>{lang === 'es' ? 'Pérdida' : lang === 'pt' ? 'Perda' : 'Packet loss'}</td>
                     <td>{b.lossPct.great}%</td>
                     <td>&le; {b.lossPct.good}%</td>
                     <td>&le; {b.lossPct.ok}%</td>
