@@ -6,6 +6,7 @@ import { GENRE_BANDS } from '@shared/thresholds'
 import { ArcGauge } from '../ArcGauge'
 import { Meters } from '../Meters'
 import { Sparkline } from '../Sparkline'
+import { ShareButton } from '../ShareButton'
 import { SectionTitle } from './SectionTitle'
 import { gaugeMax } from '../../lib/tone'
 import { t, gaugeStateWord, genreLabel } from '../../i18n'
@@ -43,6 +44,12 @@ export function MobileOverview({ s, lang, game, bands, ping, jitter, loss, pingT
       <div className={`${PANEL} mt-3`}>
         <Sparkline data={s.liveLatency} height={110} />
       </div>
+
+      {s.status === 'done' && s.report && (
+        <div className="mt-3">
+          <ShareButton report={s.report} game={game} compact />
+        </div>
+      )}
     </div>
   )
 }

@@ -122,8 +122,11 @@ export function MobileDashboard(props: DashboardProps) {
             )}
           </div>
           <div className="flex items-center [clip-path:var(--cut-8)] shadow-[inset_0_0_0_1px_var(--gold-line-strong)]" role="group" aria-label="Language">
-            <button type="button" className={langBtn(lang === 'en')} aria-pressed={lang === 'en'} onClick={() => onSelectLang('en')}>EN</button>
-            <button type="button" className={langBtn(lang === 'es')} aria-pressed={lang === 'es'} onClick={() => onSelectLang('es')}>ES</button>
+            {(['en', 'es', 'pt'] as const).map((l) => (
+              <button key={l} type="button" className={langBtn(lang === l)} aria-pressed={lang === l} onClick={() => onSelectLang(l)}>
+                {l.toUpperCase()}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -206,12 +209,12 @@ export function MobileDashboard(props: DashboardProps) {
         {/* per-game guide links — crawlable internal links on mobile */}
         <footer className="mt-8 pt-5 [border-top:1px_solid_var(--gold-line)]">
           <span className="block mb-2.5 font-ui text-[11px] font-semibold tracking-[0.2em] uppercase text-ink-lo">
-            {lang === 'es' ? 'Guías por juego' : 'Per-game guides'}
+            {lang === 'es' ? 'Guías por juego' : lang === 'pt' ? 'Guias por jogo' : 'Per-game guides'}
           </span>
           <nav className="flex flex-wrap gap-x-4 gap-y-2">
             {GAMES.map((g) => (
               <Link key={g.id} to={variantPath(g.id, 'ping-test', lang)} className="text-[13px] text-ink-body no-underline hover:text-teal">
-                {g.name} {lang === 'es' ? 'ping' : 'ping test'}
+                {g.name} {lang === 'en' ? 'ping test' : 'ping'}
               </Link>
             ))}
           </nav>

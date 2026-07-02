@@ -1,6 +1,7 @@
 import type { Game } from '@shared/catalog.types'
 import { REGION_BY_ID } from '@shared/regions'
 import { RankBadge } from './RankBadge'
+import { ShareButton } from './ShareButton'
 import { Frame } from './Frame'
 import type { EngineState } from '../state/store'
 import { fmt, fmtMbps } from '../lib/format'
@@ -49,13 +50,13 @@ function VerdictText({ lang, state, game }: { lang: Lang; state: EngineState; ga
   const dl = fmtMbps(report?.download?.meanMbps)
   const ul = fmtMbps(report?.upload?.meanMbps)
   const hv = heroVerdict(lang, v?.state ?? 'NO')
-  const where = lang === 'es' ? `a ${regionLabel}` : `to ${regionLabel}`
-  const tail = ''
+  const where = lang === 'es' ? `a ${regionLabel}` : lang === 'pt' ? `até ${regionLabel}` : `to ${regionLabel}`
   const mode = state.mode === 'unknown' ? undefined : state.mode
+  const stats = `${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps`
   const metrics =
-    lang === 'es'
-      ? `${weakPointText('es', v?.reason ?? null, mode)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, bufferbloat ${bloat}.${tail}`
-      : `${weakPointText('en', v?.reason ?? null, mode)}${fmt(ping, 0)} ms ${where}, ${lt}, ${dl}↓/${ul}↑ Mbps, ${bloat} bufferbloat.${tail}`
+    lang === 'en'
+      ? `${weakPointText('en', v?.reason ?? null, mode)}${stats}, ${bloat} bufferbloat.`
+      : `${weakPointText(lang, v?.reason ?? null, mode)}${stats}, bufferbloat ${bloat}.`
 
   return (
     <>
@@ -103,6 +104,7 @@ export function Hero({ state, game, onRun }: { state: EngineState; game: Game; o
             >
               {ctaLabel}
             </button>
+            {state.status === 'done' && state.report && <ShareButton report={state.report} game={game} />}
             <div className="flex gap-[26px] flex-wrap text-[13px] max-[760px]:justify-center [&_span]:text-ink-lo [&_b]:text-ink-mid [&_b]:font-semibold">
               {state.backendLabel && (
                 <span>

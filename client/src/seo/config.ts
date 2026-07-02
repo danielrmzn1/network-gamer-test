@@ -11,4 +11,4 @@ export const abs = (path: string): string => `${SITE_URL}${path.startsWith('/') 
 export const DEFAULT_OG_IMAGE = '/og.png'
 
 /** Locales the site publishes, in hreflang order. */
-export const LOCALES = ['en', 'es'] as const
+export const LOCALES = ['en', 'es', 'pt'] as const

@@ -24,7 +24,7 @@ interface SeoProps {
   jsonLd?: object | object[]
 }
 
-const ogLocale = (l: Lang): string => (l === 'es' ? 'es_ES' : 'en_US')
+const ogLocale = (l: Lang): string => (l === 'es' ? 'es_ES' : l === 'pt' ? 'pt_BR' : 'en_US')
 
 /**
  * Per-route document head: title, meta description, canonical, Open Graph,

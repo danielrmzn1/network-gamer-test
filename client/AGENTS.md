@@ -6,7 +6,7 @@
 
 - Single-page React 18 app, no framework beyond React: state, i18n, and routing are hand-rolled.
 - Renders the `EngineState` snapshot from the global store and drives the engine via buttons (`onRun` → `runTest`, game/region picks → `recompute`).
-- Bilingual EN/ES. Honesty-by-design: every metric shows how it was measured and which mode (`local`/`hosted`) is active.
+- Trilingual EN/ES/PT-BR. Honesty-by-design: every metric shows how it was measured and which mode (`local`/`hosted`) is active.
 - Stack: `vite@6`, `react`/`react-dom@18.3`, `typescript@5.7`, `vitest@2`, `@vitejs/plugin-react`. No state/i18n/router/CSS libraries.
 
 ## Setup & commands
@@ -59,8 +59,8 @@ Global setup (`corepack`, `pnpm install`, `pnpm dev`) lives in the root [AGENTS.
 
 - Store singleton defaults are `'lol'` + `'LATAM-North'` (the product's intended first-load defaults). Changing them changes the default game/region everywhere.
 - Keep the `store.set` ~100ms throttle and `SPARK_MAX = 120` cap — they keep high-frequency live phases from thrashing React and bound memory. Use `immediate=true` for things that must repaint at once (e.g. mode detection: `store.set({ mode }, true)`).
-- `i18n.ts` `S` is typed `satisfies Record<string, Entry>` and the enum maps are `Record<EnumType, Entry>` — every key needs both `en` and `es`. Adding a shared `Genre`/`VerdictState`/`PhaseName` is a compile error here until translated; keep the maps exhaustive.
-- `i18n.ts` defaults the language from the browser/system locale on first visit (any `navigator.languages` entry starting `es` → Spanish, else English), then persists the choice to `localStorage['fragrate-lang']`. Preserve this first-visit behavior.
+- `i18n.ts` `S` is typed `satisfies Record<string, Entry>` and the enum maps are `Record<EnumType, Entry>` — every key needs `en`, `es` and `pt`. Adding a shared `Genre`/`VerdictState`/`PhaseName` is a compile error here until translated; keep the maps exhaustive.
+- `i18n.ts` defaults the language from the browser/system locale on first visit (first `navigator.languages` entry starting `es` → Spanish or `pt` → Portuguese, else English), then persists the choice to `localStorage['fragrate-lang']`. Preserve this first-visit behavior.
 - Keep every metric's "how it was measured" label intact: the Hero meta line (latency TCP vs HTTPS, loss method, backend) and the footer `noteBody` differ by mode. This is the core HONESTY value.
 - The `@shared` alias and dev proxy paths (`/api`, `/dl`, `/ul`, `/net` with `ws:true` → `:8787`) must stay in sync across `vite.config.ts`, `vitest.config.ts`, and `tsconfig.json`.
 - Build runs under `strict` + `noUnusedLocals`/`noUnusedParameters` — unused imports/vars fail the build. Keep code clean.

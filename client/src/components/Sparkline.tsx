@@ -96,7 +96,7 @@ export function Sparkline({ data, height = 170 }: { data: number[]; height?: num
         <span className="font-semibold tracking-[0.2em] text-xs leading-[normal] uppercase text-gold">{t(lang, 'latencyOverTime')}</span>
         <span className="text-xs leading-[normal] tracking-[0.05em] text-ink-lo">
           {data.length
-            ? `${data[data.length - 1].toFixed(0)} ms ${lang === 'es' ? 'ahora' : 'now'} · ${data.length} ${lang === 'es' ? 'muestras' : 'samples'}`
+            ? `${data[data.length - 1].toFixed(0)} ms ${lang === 'es' ? 'ahora' : lang === 'pt' ? 'agora' : 'now'} · ${data.length} ${lang === 'es' ? 'muestras' : lang === 'pt' ? 'amostras' : 'samples'}`
             : t(lang, 'awaitingSamples')}
         </span>
       </div>
